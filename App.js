@@ -24,7 +24,7 @@ import {
 
 
 
-//import wifi from "react-native-android-wifi";
+import wifi from "react-native-android-wifi";
 //import Hotspot from "react-native-wifi-hotspot";
 
 
