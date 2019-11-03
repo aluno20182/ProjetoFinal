@@ -97,7 +97,7 @@ class App extends React.Component {
       });
     }
 
-
+/*
     //HotsPot enable function
     doEnable = () => {
       // console.warn("do Enable called");
@@ -122,7 +122,7 @@ class App extends React.Component {
         }
       );
     };
-
+*/
     getWifiNetworksOnPress(){
       wifi.loadWifiList((wifiStringList) => {
           console.log(wifiStringList);
@@ -140,19 +140,10 @@ class App extends React.Component {
 
 
     verSSID = () => {
-      wifi.getSSID((SSID) => {
-        wifi.disconnect();
-        console.log("Forgetting the wifi device - " + SSID);
-        console.log(SSID);
-
-        
+      wifi.getSSID((ssid) => {
+        console.log(ssid);
       });
     };
-
-
-    esquecerWifi = () => {
-      wifi.disconnect();
-    }
 
     connectionStatusOnPress(){
       wifi.connectionStatus((isConnected) => {
@@ -223,12 +214,6 @@ class App extends React.Component {
                 title="Ver SSID"
                 onPress={this.verSSID}
                 />              
-
-                <Text>{"\n"}</Text>
-                <Button
-                title="Esquecer Wifi"
-                onPress={this.esquecerWifi}
-                />
 
                 <Text>{"\n"}</Text>
                 <Button
