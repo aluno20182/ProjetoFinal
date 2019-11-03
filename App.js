@@ -15,6 +15,8 @@ import {
   Text,
   Modal,
   ToastAndroid,
+  TextInput,
+  TouchableHighlight,
   PermissionsAndroid,
 } from 'react-native';
 
@@ -138,6 +140,13 @@ class App extends React.Component {
       );
     }
 
+    conectar(){
+      //found returns true if ssid is in the range
+      wifi.findAndConnect(this.state.ssid, this.state.password, (found) => {
+        this.setState({ssidExist:found});
+      });
+    }
+
 
     verSSID = () => {
       wifi.getSSID((ssid) => {
@@ -220,6 +229,29 @@ class App extends React.Component {
                 title="Força do Sinal"
                 onPress={this.verLevel}
                 />
+
+                <Text>{"\n"}</Text>
+
+                <View style={styles.instructionsContainer}>
+                  <Text>Sign device into a specific network:</Text>
+                  <Text>SSID</Text>
+                  <TextInput 
+                    underlineColorAndroid='transparent'
+                    onChangeText={(event)=>this.state.ssid=event}
+                    value={this.state.ssid}
+                    placeholder={'ssid'} />
+                  <Text>Password</Text>
+                  <TextInput
+                    secureTextEntry={true} 
+                    underlineColorAndroid='transparent'
+                    onChangeText={(event)=>this.state.pass=event}
+                    value={this.state.pass}
+                    placeholder={'password'} />
+                  <View >
+                    <Button title="Conectar" onPress={this.connectOnPress.bind(this)}/>
+                    <Text style={styles.answer}>{this.state.ssidExist==null?"":this.state.ssidExist?"Network in range :)":"Network out of range :("}</Text>
+                  </View>
+                </View>
 
                 <Text>{"\n"}</Text>
 
