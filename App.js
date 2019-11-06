@@ -213,100 +213,120 @@ class App extends React.Component {
             <Text style={styles.sectionTitle}>
               <Text style={styles.highlight}>WIFI{"\n"}</Text>
             </Text>
+            <View style={styles.instructionsContainer}>
+              <Button
+                title="Ligar/Desligar Wifi"
+                onPress={this.wifiStatus}
+              />
+              <Text style={styles.answer}> {this.state.status?"Ligado :)":"Desligado :("}</Text>
+              <Text>{"\n"}</Text>
 
-            <Button
-              title="Ligar/Desligar Wifi"
-              onPress={this.wifiStatus}
-            />
-                <Text>{"\n"}</Text>
-                <Button
+            </View>
+            
+            <Text>{"\n"}</Text>
+
+            <View style={styles.instructionsContainer}>                            
+              <Button
                 title="Ver SSID"
                 onPress={this.verSSID}
-                />              
+              /> 
+              <Text style={styles.answer}> {this.state.ssid}</Text>
+              <Text>{"\n"}</Text>
+            </View>             
 
-                <Text>{"\n"}</Text>
-                <Button
+            <Text>{"\n"}</Text>
+            
+            <View style={styles.instructionsContainer}>                            
+              <Button
                 title="Força do Sinal"
                 onPress={this.verLevel}
-                />
+              />
+              <Text>{"\n"}</Text>
+            </View>
+            
+            <Text>{"\n"}</Text>
 
-                <Text>{"\n"}</Text>
-
-                <View style={styles.instructionsContainer}>
-                  <Text>Sign device into a specific network:</Text>
-                  <Text>SSID</Text>
-                  <TextInput 
-                    underlineColorAndroid='transparent'
-                    onChangeText={(event)=>this.state.ssid=event}
-                    value={this.state.ssid}
-                    placeholder={'ssid'} />
-                  <Text>Password</Text>
-                  <TextInput
-                    secureTextEntry={true} 
-                    underlineColorAndroid='transparent'
-                    onChangeText={(event)=>this.state.pass=event}
-                    value={this.state.pass}
-                    placeholder={'password'} />
-                  <View >
-                    <Button title="Conectar" onPress={this.connectOnPress.bind(this)}/>
-                    <Text style={styles.answer}>{this.state.ssidExist==null?"":this.state.ssidExist?"Network in range :)":"Network out of range :("}</Text>
-                  </View>
-                </View>
-
-                <Text>{"\n"}</Text>
-
-                <View>
-                  <Button title="Procurar Wifi"
-                    onPress={this.getWifiNetworksOnPress.bind(this)}>
-                    <Text style={styles.buttonText}>Available WIFI Networks</Text>
-                  </Button>
-                </View>
-
-                <Text>{"\n"}</Text>
-                <Button
-                title="verIP"
-                onPress={this.verIP}
-                />
-
-                
-
-                <Text style={styles.sectionTitle}>
-                <Text style={styles.highlight}>{"\n"}HOTSPOT</Text>
-                </Text>
-              </View>
-
-              <View style={styles.sectionContainer}>
-                <Button 
-                title="Ativar Hotspot" 
-                onPress={this.doEnable} 
-                />
-              </View>
-
-              <View style={styles.sectionContainer}>
-                <Button 
-                title="desativar Hotspot" 
-                onPress={this.doDisable} 
-                />
-              </View>
-
-              <View style = {styles.sectionContainer}>
-              <Text style = {styles.sectionTitle}>
-              <Text style = {styles.highlight}>TO DO</Text>
-              </Text>
-              <Text style= {styles.sectionDescription}>Implementar: Esquecer a rede</Text>
+            <View style={styles.instructionsContainer}>
+              <Text>Sign device into a specific network:</Text>
+              <Text>{"\n"}</Text>
+              <Text>SSID</Text>
+              <TextInput 
+                underlineColorAndroid='transparent'
+                onChangeText={(event)=>this.state.ssid=event}
+                value={this.state.ssid}
+                placeholder={'ssid'} 
+              />
+              <Text>Password</Text>
+              <TextInput
+                secureTextEntry={true} 
+                underlineColorAndroid='transparent'
+                onChangeText={(event)=>this.state.pass=event}
+                value={this.state.pass}
+                placeholder={'password'}                   
+              />
+              <View>
+                <Button title="Conectar" onPress={this.connectOnPress.bind(this)}/>
+                <Text style={styles.answer}>{this.state.ssidExist==null?"":this.state.ssidExist?"Network in range :)":"Network out of range :("}</Text>
               </View>
             </View>
-            <Modal 
-              visible={this.state.modalVisible}
-              onRequestClose={() => {}}>
-              <Button title="Back" onPress={()=>this.setState({modalVisible:false})}>
-                <Text style={styles.buttonText}>Close</Text>
+
+            <Text>{"\n"}</Text>
+
+            <View style={styles.instructionsContainer}>
+              <Button 
+                title="Procurar Wifi"
+                onPress={this.getWifiNetworksOnPress.bind(this)}>
+                <Text style={styles.buttonText}>Available WIFI Networks</Text>
               </Button>
-              <ScrollView>
+              <Text>{"\n"}</Text>
+            </View>
+
+            <Text>{"\n"}</Text>
+          
+            <View style={styles.instructionsContainer}>
+              <Button
+                title="verIP"
+                onPress={this.verIP}
+              />           
+              <Text>{"\n"}</Text>
+              <Text style={styles.sectionTitle}>
+                <Text style={styles.highlight}>{"\n"}HOTSPOT</Text>
+              </Text>
+            </View>
+
+            <View style={styles.sectionContainer}>
+              <Button 
+                title="Ativar Hotspot" 
+                onPress={this.doEnable} 
+              />
+            </View>
+
+            <View style={styles.sectionContainer}>
+              <Button 
+                title="desativar Hotspot" 
+                onPress={this.doDisable} 
+              />
+            </View>
+
+            <View style = {styles.sectionContainer}>
+              <Text style = {styles.sectionTitle}>
+                <Text style = {styles.highlight}>TO DO</Text>
+              </Text>
+              <Text style= {styles.sectionDescription}>Implementar: Esquecer a rede</Text>
+            </View>
+          </View>
+          <Modal 
+            visible={this.state.modalVisible}
+            onRequestClose={() => {}}>
+            <Button title="Back" onPress={()=>this.setState({modalVisible:false})}>
+              <Text style={styles.buttonText}>Close</Text>
+            </Button>
+            <ScrollView>
               {this.renderModal()}
-              </ScrollView>
-            </Modal>
-          </ScrollView>       
+            </ScrollView>
+          </Modal>
+        </View>
+      </ScrollView>       
     );
   }
 };
