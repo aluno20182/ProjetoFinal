@@ -100,31 +100,22 @@ class App extends React.Component {
     }
 
 /*
-    //HotsPot enable function
-    doEnable = () => {
-      // console.warn("do Enable called");
-      Hotspot.enable(
-        () => {
-          ToastAndroid.show("Hotspot Enable", ToastAndroid.SHORT);
-        },
-        err => {
-          ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
-        }
-      );
-    };
-
-    //Disable HotsPot
-    doDisable = () => {
-      Hotspot.disable(
-        () => {
-          ToastAndroid.show("Hotspot Disabled", ToastAndroid.SHORT);
-        },
-        err => {
-          ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
-        }
-      );
-    };
+    enable() {
+      Hotspot.enable(() => {
+        ToastAndroid.show("Hotspot Enabled",ToastAndroid.SHORT);
+      }, (err) => {
+        ToastAndroid.show(err.toString(),ToastAndroid.SHORT);
+      })
+    }
+    disable() {
+      Hotspot.disable(() => {
+        ToastAndroid.show("Hotspot Disabled",ToastAndroid.SHORT);
+      }, (err) => {
+        ToastAndroid.show(err.toString(),ToastAndroid.SHORT);
+      })
+    }
 */
+
     getWifiNetworksOnPress(){
       wifi.loadWifiList((wifiStringList) => {
           console.log(wifiStringList);
@@ -297,14 +288,14 @@ class App extends React.Component {
             <View style={styles.sectionContainer}>
               <Button 
                 title="Ativar Hotspot" 
-                onPress={this.doEnable} 
+                onPress={this.enable} 
               />
             </View>
 
             <View style={styles.sectionContainer}>
               <Button 
                 title="desativar Hotspot" 
-                onPress={this.doDisable} 
+                onPress={this.disable} 
               />
             </View>
 
