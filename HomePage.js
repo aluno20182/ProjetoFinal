@@ -1,0 +1,424 @@
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ * @flow
+ */
+
+import React from 'react';
+import {
+  StyleSheet,
+  ScrollView,
+  Button,
+  View,
+  Text,
+  Modal,
+  TextInput,
+  ToastAndroid,
+  PermissionsAndroid,
+  Alert,
+  FlatList,
+} from 'react-native';
+
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+
+import wifi from 'react-native-android-wifi';
+import Hotspot from 'react-native-wifi-hotspot';
+import AndroidOpenSettings from 'react-native-android-open-settings';
+import {createStackNavigator} from 'react-navigation-stack';
+
+class HomePage extends React.Component {
+  static navigationOptions = {
+    title: 'HomePage',
+  };
+
+  constructor(props) {
+    super(props);
+    //const ds = new FlatList.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    //const peers = [];
+    this.state = {
+      isWifiNetworkEnabled: null,
+      ssid: null,
+      pass: null,
+      ssidExist: null,
+      //currentSSID: null,
+      currentBSSID: null,
+      wifiList: null,
+      modalVisible: false,
+      status: null,
+      level: null,
+      ip: null,
+      //peers,
+      //dataSource: this.ds.cloneWithRows(peers),
+    };
+  }
+
+  componentDidMount() {
+    //console.log(wifi);
+    this.askForUserPermissions();
+  }
+
+  async askForUserPermissions() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Wifi networks',
+          message: 'We need your permission in order to find wifi networks',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Thank you for your permission! :)');
+      } else {
+        console.log(
+          'You will not able to retrieve wifi available networks list',
+        );
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  ServiceCheckOnPress() {
+    wifi.isEnabled(isEnabled => {
+      this.setState({isWifiNetworkEnabled: isEnabled});
+      console.log(isEnabled);
+    });
+  }
+
+  onWifi = () => {
+    wifi.setEnabled(true);
+    //console.log("ligou");
+  };
+
+  offWifi = () => {
+    wifi.setEnabled(false);
+    //console.log("desligou");
+  };
+
+  connectOnPress() {
+    wifi.findAndConnect(this.state.ssid, this.state.pass, found => {
+      this.setState({ssidExist: found});
+    });
+  }
+
+  doEnable(){
+    // console.warn("do Enable called");
+    Hotspot.enable(() => {
+      ToastAndroid.show("Hotspot Enabled",ToastAndroid.SHORT);
+    }, (err) => {
+      ToastAndroid.show(err.toString( ),ToastAndroid.SHORT);
+    })
+  };
+  doDisable(){
+    Hotspot.disable(() => {
+      ToastAndroid.show("Hotspot Disabled",ToastAndroid.SHORT);
+    }, (err) => {
+      ToastAndroid.show(err.toString(),ToastAndroid.SHORT);
+    })
+  };
+
+  //Create your hotspot
+  //This work succesfully once you enable hotspot. Otherwise it throw errors
+  onCreate() {
+    const hotspot = {SSID: 'ASSEM', password: 'helloworld'};
+    Hotspot.create(
+      hotspot,
+      () => {
+        ToastAndroid.show('Hotspot enstablished', ToastAndroid.SHORT);
+      },
+      err => {
+        ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
+      },
+    );
+  }
+  doFetch() {
+    Hotspot.getConfig(
+      config => {
+        ToastAndroid.show(config.ssid, ToastAndroid.SHORT);
+      },
+      err => {
+        ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
+      },
+    );
+  }
+
+  /*doPeers() {
+    Hotspot.peersList(
+      data => {
+        const peers = JSON.parse(data);
+        this.setState({peers, dataSource: this.ds.cloneWithRows(peers)});
+      },
+      err => {
+        ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
+      },
+    );
+  }*/
+
+
+  conectar() {
+    //found returns true if ssid is in the range
+    wifi.findAndConnect(this.state.ssid, this.state.password, found => {
+      this.setState({ssidExist: found});
+    });
+  }
+
+  verSSID = () => {
+    wifi.getSSID(ssid => {
+      console.log(ssid);
+      //this.setState({ssid:ssid});
+      Alert.alert(ssid);
+    });
+  };
+
+  connectionStatusOnPress() {
+    wifi.connectionStatus(isConnected => {
+      this.setState({status: isConnected});
+    });
+  }
+
+  //level is the detected signal level in dBm, also known as the RSSI. (Remember its a negative value)
+  verLevel = () => {
+    wifi.getCurrentSignalStrength(level => {
+      console.log(level);
+      //Alert.alert(level);
+    });
+  };
+
+  //get the current network connection IP
+  verIP = () => {
+    wifi.getIP(ip => {
+      console.log(ip);
+      Alert.alert(ip);
+    });
+  };
+
+  wifiStatus = () => {
+    wifi.isEnabled(isEnabled => {
+      if (isEnabled) {
+        this.offWifi();
+        this.setState({status: isEnabled});
+        console.log(this.state.status);
+      } else if (!isEnabled) {
+        this.onWifi();
+        this.setState({status: isEnabled});
+        console.log(this.state.status);
+      }
+    });
+  };
+
+  goToSet = () => {
+    // Open date settings menu
+    AndroidOpenSettings.wirelessSettings();
+  };
+
+
+
+  render() {
+    const {navigate} = this.props.navigation;
+
+    return (
+      <ScrollView>
+        <View style={styles.body}>
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              <Text style={styles.highlight}>WIFI{'\n'}</Text>
+            </Text>
+            <View style={styles.instructionsContainer}>
+              <Button title="Ligar/Desligar Wifi" onPress={this.wifiStatus} />
+              <Text style={styles.answer}>
+                {' '}
+                {this.state.status ? 'Desligado 😒' : 'Ligado 👌'}
+              </Text>
+              <Text>{'\n'}</Text>
+            </View>
+
+            <Text>{'\n'}</Text>
+
+            <View style={styles.instructionsContainer}>
+              <Button title="Ver SSID" onPress={this.verSSID} />
+              {}
+              <Text style={styles.answer}> {this.state.ssid}</Text>
+              <Text>{'\n'}</Text>
+            </View>
+
+            <Text>{'\n'}</Text>
+
+            <View style={styles.instructionsContainer}>
+              <Button title="Força do Sinal" onPress={this.verLevel} />
+              <Text>{'\n'}</Text>
+            </View>
+
+            <Text>{'\n'}</Text>
+
+            <View style={styles.instructionsContainer}>
+              <Text>Sign device into a specific network:</Text>
+              <Text>{'\n'}</Text>
+              <Text>SSID</Text>
+              <TextInput
+                underlineColorAndroid="transparent"
+                onChangeText={event => (this.state.ssid = event)}
+                value={this.state.ssid}
+                placeholder={'ssid'}
+              />
+              <Text>Password</Text>
+              <TextInput
+                secureTextEntry={true}
+                underlineColorAndroid="transparent"
+                onChangeText={event => (this.state.pass = event)}
+                value={this.state.pass}
+                placeholder={'password'}
+              />
+              <View>
+                <Button
+                  title="Conectar"
+                  onPress={this.connectOnPress.bind(this)}
+                />
+                <Text style={styles.answer}>
+                  {this.state.ssidExist == null
+                    ? ''
+                    : this.state.ssidExist
+                    ? 'Network in range :)'
+                    : 'Network out of range :('}
+                </Text>
+              </View>
+            </View>
+
+            <Text>{'\n'}</Text>
+
+            <View style={styles.instructionsContainer}>
+              <Button
+                title="Procurar Wifi"
+                onPress={
+                  () =>
+                    navigate(
+                      'Procura',
+                    ) /*this.getWifiNetworksOnPress.bind(this)*/
+                }>
+                <Text style={styles.buttonText}>Available WIFI Networks</Text>
+              </Button>
+              <Text>{'\n'}</Text>
+            </View>
+
+            <Text>{'\n'}</Text>
+
+            <View style={styles.instructionsContainer}>
+              <Button title="verIP" onPress={this.verIP} />
+              <Text>{'\n'}</Text>
+              <Text style={styles.sectionTitle}>
+                <Text style={styles.highlight}>{'\n'}HotSpot</Text>
+              </Text>
+            </View>
+
+            <View style={styles.instructionsContainer}>
+              <Text>{'\n'}</Text>
+              <Text style = {styles.subtitle}>Enable & Check if it already opened</Text>
+              <Button title='enable' onPress = {() => this.doEnable()}/>
+              <Text>{'\n'}</Text>
+            </View>
+            <View style={styles.instructionsContainer}>
+              <Text>{'\n'}</Text>
+              <Text style = {styles.subtitle}>Disable & Check if it already disabled</Text>
+              <Button title='disable' onPress = {() => this.doDisable()}/>
+              <Text>{'\n'}</Text>
+            </View>
+            <View style={styles.instructionsContainer}>
+              <Text>{'\n'}</Text>
+              <Button title="Criar Hotspot" onPress={this.onCreate} />
+              <Text>{'\n'}</Text>
+            </View>
+            <View style={styles.instructionsContainer}>
+              <Text>{'\n'}</Text>
+              <Button title="Fetch Hotspot" onPress={this.doFetch} />
+              <Text>{'\n'}</Text>
+            </View>
+            <View style={styles.instructionsContainer}>
+              <Text>{'\n'}</Text>
+              <Text style={styles.subtitle}>Show all peers</Text>
+              <Button title="peers" onPress={() => this.peers()} />
+              <Text>{'\n'}</Text>
+            </View>
+            {/*<FlatList
+              dataSource={this.state.dataSource}
+              style={{marginTop: 15}}
+              renderRow={(peer, index) => {
+                return (
+                  <View style={styles.viewList} key={index}>
+                    <Text style={styles.viewText}>{peer.device}</Text>
+                    <Text style={styles.viewText}>{peer.ip}</Text>
+                    <Text style={styles.viewText}>{peer.mac}</Text>
+                  </View>
+                );
+              }}
+              enableEmptySections>
+            </FlatList>*/}
+          </View>
+          <Text>{'\n'}</Text>
+        </View>
+      </ScrollView>
+    );
+  }
+}
+const styles = StyleSheet.create({
+  scrollView: {
+    backgroundColor: Colors.lighter,
+  },
+  engine: {
+    position: 'absolute',
+    right: 0,
+  },
+  instructionsContainer: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC',
+  },
+  body: {
+    backgroundColor: Colors.white,
+  },
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: Colors.black,
+  },
+  sectionDescription: {
+    marginTop: 8,
+    fontSize: 18,
+    fontWeight: '400',
+    color: Colors.dark,
+  },
+  highlight: {
+    fontWeight: '700',
+  },
+  button: {
+    padding: 5,
+    width: 120,
+    alignItems: 'center',
+    backgroundColor: 'blue',
+    marginRight: 15,
+  },
+  bigButton: {
+    padding: 5,
+    width: 180,
+    alignItems: 'center',
+    backgroundColor: 'blue',
+    marginRight: 15,
+  },
+  buttonText: {
+    color: 'white',
+  },
+  footer: {
+    color: Colors.dark,
+    fontSize: 12,
+    fontWeight: '600',
+    padding: 4,
+    paddingRight: 12,
+    textAlign: 'right',
+  },
+});
+
+export default HomePage;
