@@ -1,11 +1,19 @@
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import HomePage from './HomePage';
-import Procura from './Procura';
+import ReceberDados from './ReceberDados';
+import EnviarDados from './EnviarDados';
+import Cliente from './Cliente';
+import CreateHotspot from './CreateHotspot';
+import Peers from './Peers';
+
+
 
 const MainNavigator = createStackNavigator({
-  HomePage: {screen: HomePage},
-  Procura: {screen: Procura},
+  Cliente: {screen: Cliente},
+  ReceberDados: {screen: ReceberDados},
+  EnviarDados: {screen: EnviarDados},
+  CreateHotspot: {screen: CreateHotspot},
+  Peers: {screen: Peers},
 });
 
 const App = createAppContainer(MainNavigator);
