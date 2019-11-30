@@ -18,8 +18,10 @@ class CreateHotspot extends React.Component {
   //Create your hotspot
   //This work succesfully once you enable hotspot. Otherwise it throw errors
   onCreate = () => {
+    console.log(this.state.SSID)
+    const hotspot = {SSID: this.state.SSID, password: this.state.password}
     Hotspot.create(
-      this.state,
+      hotspot,
       () => {
         ToastAndroid.show("Hotspot Established", ToastAndroid.SHORT);
         this.props.navigation.pop();

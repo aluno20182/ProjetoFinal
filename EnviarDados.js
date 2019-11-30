@@ -50,15 +50,12 @@ class EnviarDados extends React.Component {
   };
   //fetch your hotspot settings.
   // This funciton will give config details, after enable hotspot
-  doFetch = () => {
-    Hotspot.getConfig(
-      config => {
-        ToastAndroid.show(config.ssid, ToastAndroid.SHORT);
-      },
-      err => {
-        ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
-      }
-    );
+  doFetch() {
+    Hotspot.getConfig((config) => {
+      ToastAndroid.show(config.ssid, ToastAndroid.SHORT);
+    }, (err) => {
+      ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
+    })
   };
   //go to the peers screen
   goToPeers = () => {
