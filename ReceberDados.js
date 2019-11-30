@@ -32,7 +32,7 @@ class ReceberDados extends React.Component {
       pass: null,
       ssidExist: null,
       //currentSSID: null,
-      //currentBSSID: null,
+      //currentBSSID: null, BSSID é simplesmente o endereço MAC de um ponto de acesso wireless ou também conhecido como WAP
       wifiList: null,
       modalVisible: false,
       status: null,
@@ -72,7 +72,7 @@ class ReceberDados extends React.Component {
     wifi.getSSID(ssid => {
       console.log(ssid);
       //this.setState({ssid:ssid});
-      Alert.alert(ssid);
+      ToastAndroid.show(ssid, ToastAndroid.SHORT);
     });
   };
 
@@ -85,16 +85,16 @@ class ReceberDados extends React.Component {
   //level is the detected signal level in dBm, also known as the RSSI. (Remember its a negative value)
   verLevel = () => {
     wifi.getCurrentSignalStrength(level => {
+      ToastAndroid.show(level, ToastAndroid.SHORT);
       console.log(level);
-      //Alert.alert(level);
     });
   };
 
   //get the current network connection IP
   verIP = () => {
     wifi.getIP(ip => {
+      ToastAndroid.show(ip, ToastAndroid.SHORT);
       console.log(ip);
-      Alert.alert(ip);
     });
   };
 
@@ -146,17 +146,23 @@ class ReceberDados extends React.Component {
           <Text>Frequency: {this.state.wifiList[w].frequency}</Text>
           <Text>Level: {this.state.wifiList[w].level}</Text>
           <Text>Timestamp: {this.state.wifiList[w].timestamp}</Text>
-          <Button title="Selecionar" onPress={this.selClick} />
+          <Button
+            title="Selecionar"
+            key={w}
+            id={w}
+            onPress={evt => this.selClick(evt)}
+          />
         </View>,
       );
     }
     return wifiListComponents;
   }
 
-  selClick = () => {
+  selClick = (evt) => {
     this.setState({
       ssid: this.state.wifiList[w].SSID,
     });
+    console.log(evt.target.id);
   };
 
   render() {
