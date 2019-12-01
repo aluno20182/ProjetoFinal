@@ -133,36 +133,52 @@ class ReceberDados extends React.Component {
     );
   }
 
-  renderModal() {
-    var wifiListComponents = [];
-    for (w in this.state.wifiList) {
-      wifiListComponents.push(
-        <View key={w} style={styles.instructionsContainer}>
-          <Text style={styles.instructionsTitle}>
-            {this.state.wifiList[w].SSID}
-          </Text>
-          <Text>BSSID: {this.state.wifiList[w].BSSID}</Text>
-          <Text>Capabilities: {this.state.wifiList[w].capabilities}</Text>
-          <Text>Frequency: {this.state.wifiList[w].frequency}</Text>
-          <Text>Level: {this.state.wifiList[w].level}</Text>
-          <Text>Timestamp: {this.state.wifiList[w].timestamp}</Text>
-          <Button
-            title="Selecionar"
-            key={w}
-            id={w}
-            onPress={evt => this.selClick(evt)}
-          />
-        </View>,
-      );
+  renderModal = () => {
+    /*     let wifiListComponents = [];
+    if (this.state.wifiList != null && this.state.wifiList.length > 0) {
+      for (w in this.state.wifiList) {
+        wifiListComponents.push(
+        <View style={styles.instructionsContainer}>
+          <View key={w} style={styles.instructionsContainer}>
+            <Text style={styles.instructionsTitle}>
+              {this.state.wifiList[w].SSID}
+            </Text>
+            <Text>BSSID: {this.state.wifiList[w].BSSID}</Text>
+            <Text>Capabilities: {this.state.wifiList[w].capabilities}</Text>
+            <Text>Frequency: {this.state.wifiList[w].frequency}</Text>
+            <Text>Level: {this.state.wifiList[w].level}</Text>
+            <Text>Timestamp: {this.state.wifiList[w].timestamp}</Text>
+          </View>
+          <Button title="Selecionar" key={w} onPress={this.selClick} />
+        </View>
+        );
+      }
     }
-    return wifiListComponents;
-  }
+    return wifiListComponents;   */
+    //console.log(this.state.wifiList);
+    
+    if (this.state.wifiList != null && this.state.wifiList.length > 0) {
+      const wifiListComponents = this.state.wifiList.map(w => (
+        <View key={w.SSID} style={styles.instructionsContainer}>
+            <Text style={styles.instructionsTitle}>
+              {w.SSID}
+            </Text>
+            <Text>BSSID: {w.BSSID}</Text>
+            <Text>Capabilities: {w.capabilities}</Text>
+            <Text>Frequency: {w.frequency}</Text>
+            <Text>Level: {w.level}</Text>
+            <Text>Timestamp: {w.timestamp}</Text>
+          <Button title="Selecionar" onPress={() => this.selClick(w)}/>
+        </View>
+      ));
+      return wifiListComponents;
+    }
+  };
 
-  selClick = (evt) => {
+  selClick = w => {
     this.setState({
-      ssid: this.state.wifiList[w].SSID,
-    });
-    console.log(evt.target.id);
+      ssid: w.SSID,
+    }); 
   };
 
   render() {
