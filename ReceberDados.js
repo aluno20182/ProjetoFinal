@@ -71,6 +71,7 @@ class ReceberDados extends React.Component {
   verSSID = () => {
     wifi.getSSID(ssid => {
       console.log(ssid);
+
       //this.setState({ssid:ssid});
       ToastAndroid.show(ssid, ToastAndroid.SHORT);
     });
@@ -156,19 +157,17 @@ class ReceberDados extends React.Component {
     }
     return wifiListComponents;   */
     //console.log(this.state.wifiList);
-    
+
     if (this.state.wifiList != null && this.state.wifiList.length > 0) {
       const wifiListComponents = this.state.wifiList.map(w => (
         <View key={w.SSID} style={styles.instructionsContainer}>
-            <Text style={styles.instructionsTitle}>
-              {w.SSID}
-            </Text>
-            <Text>BSSID: {w.BSSID}</Text>
-            <Text>Capabilities: {w.capabilities}</Text>
-            <Text>Frequency: {w.frequency}</Text>
-            <Text>Level: {w.level}</Text>
-            <Text>Timestamp: {w.timestamp}</Text>
-          <Button title="Selecionar" onPress={() => this.selClick(w)}/>
+          <Text style={styles.instructionsTitle}>{w.SSID}</Text>
+          <Text>BSSID: {w.BSSID}</Text>
+          <Text>Capabilities: {w.capabilities}</Text>
+          <Text>Frequency: {w.frequency}</Text>
+          <Text>Level: {w.level}</Text>
+          <Text>Timestamp: {w.timestamp}</Text>
+          <Button title="Selecionar" onPress={() => this.selClick(w)} />
         </View>
       ));
       return wifiListComponents;
@@ -178,7 +177,7 @@ class ReceberDados extends React.Component {
   selClick = w => {
     this.setState({
       ssid: w.SSID,
-    }); 
+    });
   };
 
   render() {
@@ -191,29 +190,22 @@ class ReceberDados extends React.Component {
             </Text>
             <View style={styles.instructionsContainer}>
               <Button title="Ligar/Desligar Wifi" onPress={this.wifiStatus} />
-              <Text style={styles.answer}>
-                {' '}
-                {this.state.status ? 'Desligado 😒' : 'Ligado 👌'}
-              </Text>
-              <Text>{'\n'}</Text>
-            </View>
 
-            <Text>{'\n'}</Text>
+              {this.state.status
+                ? ToastAndroid.show(
+                    "You're not connected :(",
+                    ToastAndroid.SHORT,
+                  )
+                : ToastAndroid.show("You're connected :)", ToastAndroid.SHORT)}
+            </View>
 
             <View style={styles.instructionsContainer}>
               <Button title="Ver SSID" onPress={this.verSSID} />
-              <Text style={styles.answer}> {this.state.ssid}</Text>
-              <Text>{'\n'}</Text>
             </View>
-
-            <Text>{'\n'}</Text>
 
             <View style={styles.instructionsContainer}>
               <Button title="Força do Sinal" onPress={this.verLevel} />
-              <Text>{'\n'}</Text>
             </View>
-
-            <Text>{'\n'}</Text>
 
             <View style={styles.instructionsContainer}>
               <Button
@@ -221,14 +213,10 @@ class ReceberDados extends React.Component {
                 onPress={this.getWifiNetworksOnPress.bind(this)}>
                 <Text style={styles.buttonText}>Available WIFI Networks</Text>
               </Button>
-              <Text>{'\n'}</Text>
             </View>
-
-            <Text>{'\n'}</Text>
 
             <View style={styles.instructionsContainer}>
               <Button title="verIP" onPress={this.verIP} />
-              <Text>{'\n'}</Text>
             </View>
             <Modal
               visible={this.state.modalVisible}
