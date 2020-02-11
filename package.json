@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "aws-amplify": "^2.2.4",
     "deprecated-react-native-listview": "0.0.6",
     "react": "16.9.0",
     "react-native": "0.61.4",

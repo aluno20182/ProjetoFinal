@@ -189,7 +189,7 @@ class ReceberDados extends React.Component {
               <Text style={styles.highlight}>WIFI{'\n'}</Text>
             </Text>
             <View style={styles.instructionsContainer}>
-              <Button title="Ligar/Desligar Wifi" onPress={this.wifiStatus} />
+              <Button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored" title="Ligar/Desligar Wifi" onPress={this.wifiStatus} />
 
               {this.state.status
                 ? ToastAndroid.show(
