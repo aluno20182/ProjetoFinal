@@ -18,7 +18,7 @@ class SignIn extends Component {
     try {
       await Auth.signIn(username, password);
       console.log('successfully signed in');
-      this.props.navigation.navigate('MainNav');
+      this.props.navigation.navigate('Cliente');
     } catch (err) {
       console.log('error signing up...', err);
     }
@@ -29,7 +29,7 @@ class SignIn extends Component {
   render() {
     return (
       <View>
-        <Button
+{/*         <Button
           title="Sign in with Google"
           onPress={() => Auth.federatedSignIn({provider: 'Google'})}
         />
@@ -44,7 +44,7 @@ class SignIn extends Component {
         <Button
           title="Launch Hosted UI"
           onPress={() => Auth.federatedSignIn()}
-        />
+        /> */}
         <Input
           onChangeText={this.onChangeText}
           type="username"

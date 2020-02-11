@@ -38,6 +38,8 @@ target 'ProjetoFinal' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'RNAWSCognito', :path => '../node_modules/amazon-cognito-identity-js'
+
   target 'ProjetoFinalTests' do
     inherit! :search_paths
     # Pods for testing

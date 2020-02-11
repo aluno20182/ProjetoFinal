@@ -25,11 +25,11 @@ class Auth extends React.Component {
     const showForgotPassword = this.state.formType === 'showForgotPassword'
     return (
       <View style={styles.container}>
-        <Image
+{/*         <Image
           style={styles.logo}
           resizeMode='contain'
           source={require("../../assets/amplify.png")}
-        />
+        /> */}
         <Text style={styles.title}>AWS Amplify</Text>
         <Text style={styles.subtitle}>React Native Auth Starter</Text>
         { showSignIn && (

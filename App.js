@@ -1,25 +1,33 @@
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import ReceberDados from './Navigation/ReceberDados';
-import EnviarDados from './Navigation/EnviarDados';
+import React from 'react';
+//import ReceberDados from './Navigation/ReceberDados';
+//import EnviarDados from './Navigation/EnviarDados';
 import Cliente from './Navigation/Cliente';
-import CreateHotspot from './Navigation/CreateHotspot';
-import Peers from './Navigation/Peers';
-import SignIn from './Navigation/SignIn';
+//import CreateHotspot from './Navigation/CreateHotspot';
+//import Peers from './Navigation/Peers';
+//import SignIn from './Navigation/SignIn';
 
-import Auth from './Navigation/Auth'
-import { Auth as AmplifyAuth } from 'aws-amplify'
+import Initializing from './Navigation/Initializing';
+import Auth from './Navigation/Auth';
 
-const SwitchNav = createSwitchNavigator({
+import Amplify, { Auth as AmplifyAuth  } from 'aws-amplify';
+import awsconfig from './aws-exports';
+Amplify.configure(awsconfig);
+
+const SwitchNav = createStackNavigator({
+  Initializing: {
+    screen: Initializing
+  },
   Auth: {
     screen: Auth
   },
-  SignIn: {
-    screen: SignIn
+  Cliente: {
+    screen: Cliente
   }
 })
 
-const App = createAppContainer(SwitchNav);
+const Nav = createAppContainer(SwitchNav);
 
 
 class App extends React.Component {
@@ -42,5 +50,5 @@ class App extends React.Component {
   }
 }
 
-export default App
+export default App;
 
