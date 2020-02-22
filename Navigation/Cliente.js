@@ -8,9 +8,22 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {Auth} from 'aws-amplify';
+import EnivarDados from './EnviarDados';
+import ReceberDados from './ReceberDados';
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
+
+const ClienteNav = createStackNavigator({
+  EnivarDados: {
+    screen: EnivarDados,
+  },
+  ReceberDados: {
+    screen: ReceberDados,
+  },
+});
+const Nav = createAppContainer(ClienteNav);
 
 class Cliente extends React.Component {
   static navigationOptions = {
@@ -26,6 +39,15 @@ class Cliente extends React.Component {
     //console.log(wifi);
     this.askForUserPermissions();
   }
+
+  signOut = async () => {
+    try {
+      await Auth.signOut();
+      this.props.navigation.navigate('Auth');
+    } catch (err) {
+      console.log('error signing out...', err);
+    }
+  };
 
   async askForUserPermissions() {
     try {
@@ -48,18 +70,19 @@ class Cliente extends React.Component {
     }
   }
 
-
   render() {
     const {navigate} = this.props.navigation;
 
     return (
-      <ScrollView>
-        <View style={styles.body}>
+      <Nav
+        ref={nav => (this.navigator = nav)}
+        >
+        <View style={styles.container}>
           <View style={styles.sectionContainer}>
             <View style={styles.instructionsContainer}>
               <Button
                 title="Enviar Dados"
-                onPress={() => navigate('EnviarDados')}
+                onPress={() => navigate('EnivarDados')}
               />
               <Text>{'\n'}</Text>
             </View>
@@ -73,15 +96,21 @@ class Cliente extends React.Component {
               />
               <Text>{'\n'}</Text>
             </View>
+            <Button
+              title="Sign Out"
+              onPress={this.signOut}
+              style={styles.link}></Button>
           </View>
         </View>
-      </ScrollView>
+      </Nav>
     );
   }
 }
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#2d2d2d',
   },
   engine: {
     position: 'absolute',
@@ -137,6 +166,10 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
+  },
+  link: {
+    color: 'blue',
+    marginVertical: 5,
   },
 });
 export default Cliente;

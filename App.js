@@ -1,31 +1,38 @@
-import {createAppContainer} from 'react-navigation';
+import {NavigationActions, createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import React from 'react';
-//import ReceberDados from './Navigation/ReceberDados';
-//import EnviarDados from './Navigation/EnviarDados';
-import Cliente from './Navigation/Cliente';
-//import CreateHotspot from './Navigation/CreateHotspot';
-//import Peers from './Navigation/Peers';
-//import SignIn from './Navigation/SignIn';
 
-import Initializing from './Navigation/Initializing';
-import Auth from './Navigation/Auth';
+import Home from './Navigation/Home';
+import Cliente from './Navigation/Cliente';
+
+import Auth from './Navigation/Auth/Auth';
 
 import Amplify, { Auth as AmplifyAuth  } from 'aws-amplify';
 import awsconfig from './aws-exports';
 Amplify.configure(awsconfig);
 
 const SwitchNav = createStackNavigator({
-  Initializing: {
-    screen: Initializing
-  },
+
   Auth: {
-    screen: Auth
+    screen: Auth,
+    navigationOptions: {
+      header: null,
+    },
   },
+/*   Home: {
+    screen: Home,
+    navigationOptions: {
+      header: null,
+    },
+  }, */
   Cliente: {
-    screen: Cliente
+    screen: Cliente,
+    navigationOptions: {
+      header: null,
+    },
   }
 })
+
 
 const Nav = createAppContainer(SwitchNav);
 
@@ -41,6 +48,7 @@ class App extends React.Component {
     }
   }
   render() {
+    //const {navigate} =this.props.navigation;
     return (
       <Nav
         ref={nav => this.navigator = nav}

@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import { View, StyleSheet } from 'react-native'
 
-import { Input, ActionButton } from '../Components'
+import { Input, ActionButton } from '../../Components'
 import { Auth } from 'aws-amplify'
 
 class SignUp extends Component {

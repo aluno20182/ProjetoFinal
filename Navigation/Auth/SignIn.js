@@ -3,7 +3,7 @@ import {View, Text, TouchableHighlight, StyleSheet, Button} from 'react-native';
 
 import {Auth} from 'aws-amplify';
 
-import {Input, ActionButton} from '../Components';
+import {Input, ActionButton} from '../../Components';
 
 class SignIn extends Component {
   state = {
@@ -29,7 +29,7 @@ class SignIn extends Component {
   render() {
     return (
       <View>
-{/*         <Button
+        {/*         <Button
           title="Sign in with Google"
           onPress={() => Auth.federatedSignIn({provider: 'Google'})}
         />
@@ -49,17 +49,21 @@ class SignIn extends Component {
           onChangeText={this.onChangeText}
           type="username"
           placeholder="Username"
+          autoCorrect={false}
         />
         <Input
           onChangeText={this.onChangeText}
           type="password"
           placeholder="Password"
           secureTextEntry
+          autoCorrect={false}
         />
         <ActionButton title="Sign In" onPress={this.signIn} />
         <View style={styles.buttonContainer}>
           <TouchableHighlight onPress={this.showForgotPassword}>
-            <Text>Forget your password?</Text>
+            <Text style={styles.bottomMessageHighlight}>
+              &nbsp;&nbsp;Forget your password?
+            </Text>
           </TouchableHighlight>
         </View>
       </View>
@@ -72,6 +76,10 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  bottomMessageHighlight: {
+    color: '#f4a63b',
+    paddingLeft: 10,
   },
 });
 
