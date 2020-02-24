@@ -10,6 +10,8 @@ import {
   Alert,
   FlatList,
   TouchableHighlight,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -43,12 +45,17 @@ class ReceberDados extends React.Component {
     };
   }
 
-  ServiceCheckOnPress() {
+  ServiceCheckOnPress = () => {
     wifi.isEnabled(isEnabled => {
-      this.setState({isWifiNetworkEnabled: isEnabled});
-      console.log(isEnabled);
+      if (isEnabled) {
+        this.setState({status: 'Ligado'});
+        console.log(this.state.status);
+      } else {
+        this.setState({status: 'Desligado'});
+        console.log(this.state.status);
+      }
     });
-  }
+  };
 
   onWifi = () => {
     wifi.setEnabled(true);
@@ -68,20 +75,33 @@ class ReceberDados extends React.Component {
     });
   }
 
+  refresh = () => {
+    this.setState({ssid: ssid});
+    this.ServiceCheckOnPress;
+  };
+
   verSSID = () => {
     wifi.getSSID(ssid => {
-      console.log(ssid);
+      this.ServiceCheckOnPress;
+      if (this.state.ssid == '<unknown ssid>') {
+        this.setState({ssid: 'Desconected'});
+        console.log('Desconectado')
+      } else {
+        this.setState({ssid: ssid});
+        console.log(ssid);
+      }
 
-      //this.setState({ssid:ssid});
-      ToastAndroid.show(ssid, ToastAndroid.SHORT);
+      //ToastAndroid.show(ssid, ToastAndroid.SHORT);
     });
   };
 
-  connectionStatusOnPress() {
+  //dá o estado da ligação
+  connectionStatusOnPress = () => {
     wifi.connectionStatus(isConnected => {
       this.setState({status: isConnected});
+      console.log(this.state.status);
     });
-  }
+  };
 
   //level is the detected signal level in dBm, also known as the RSSI. (Remember its a negative value)
   verLevel = () => {
@@ -99,6 +119,7 @@ class ReceberDados extends React.Component {
     });
   };
 
+  //liga wifi se estiver desligado, desliga caso contrario
   wifiStatus = () => {
     wifi.isEnabled(isEnabled => {
       if (isEnabled) {
@@ -182,101 +203,105 @@ class ReceberDados extends React.Component {
 
   render() {
     return (
-      <ScrollView>
-        <View style={styles.body}>
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
-              <Text style={styles.highlight}>WIFI{'\n'}</Text>
+      <View style={styles.container}>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>
+            <Text style={styles.highlight}>WIFI{'\n'}</Text>
+          </Text>
+          <View style={styles.instructionsContainer}>
+            <TouchableOpacity onPress={this.refresh}>
+              <Image
+                source={require('./refresh.png')}
+                style={styles.ImageIconStyle}
+              />
+            </TouchableOpacity>
+
+            <Text
+              style={styles.bottomMessageHighlight}
+              onLayout={this.ServiceCheckOnPress}>
+              Wifi status: {this.state.status}
             </Text>
-            <View style={styles.instructionsContainer}>
-              <Button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored" title="Ligar/Desligar Wifi" onPress={this.wifiStatus} />
-
-              {this.state.status
-                ? ToastAndroid.show(
-                    "You're not connected :(",
-                    ToastAndroid.SHORT,
-                  )
-                : ToastAndroid.show("You're connected :)", ToastAndroid.SHORT)}
-            </View>
-
-            <View style={styles.instructionsContainer}>
-              <Button title="Ver SSID" onPress={this.verSSID} />
-            </View>
-
-            <View style={styles.instructionsContainer}>
-              <Button title="Força do Sinal" onPress={this.verLevel} />
-            </View>
-
-            <View style={styles.instructionsContainer}>
-              <Button
-                title="Procurar Wifi"
-                onPress={this.getWifiNetworksOnPress.bind(this)}>
-                <Text style={styles.buttonText}>Available WIFI Networks</Text>
-              </Button>
-            </View>
-
-            <View style={styles.instructionsContainer}>
-              <Button title="verIP" onPress={this.verIP} />
-            </View>
-            <Modal
-              visible={this.state.modalVisible}
-              swipeDirection={['up', 'down']} // can be string or an array
-              swipeThreshold={200} // default 100
-              onSwipeOut={event => {
-                this.setState({modalVisible: false});
-              }}
-              onTouchOutside={() => {
-                this.setState({modalVisible: false});
-              }}>
-              <ModalContent>
-                <ScrollView>
-                  <View style={styles.instructionsContainer}>
-                    <Text>{'\n'}</Text>
-
-                    <Text style={styles.instructions}>SSID</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      underlineColorAndroid="transparent"
-                      onChangeText={event => (this.state.ssid = event)}
-                      value={this.state.ssid}
-                      placeholder={'ssid'}
-                    />
-                    <Text style={styles.instructions}>Password</Text>
-                    <TextInput
-                      style={styles.textInput}
-                      secureTextEntry={true}
-                      underlineColorAndroid="transparent"
-                      onChangeText={event => (this.state.pass = event)}
-                      value={this.state.pass}
-                      placeholder={'password'}
-                    />
-                    <View>
-                      <Button
-                        title="Conectar"
-                        onPress={this.connectOnPress.bind(this)}
-                      />
-                      <Text style={styles.answer}>
-                        {this.state.ssidExist == null
-                          ? ''
-                          : this.state.ssidExist
-                          ? 'Network in range :)'
-                          : 'Network out of range :('}
-                      </Text>
-                    </View>
-                    {this.renderModal()}
-                  </View>
-                </ScrollView>
-              </ModalContent>
-            </Modal>
           </View>
+          <View style={styles.instructionsContainer}>
+            <Text style={styles.bottomMessageHighlight} onLayout={this.verSSID}>
+              Wifi SSID: {this.state.ssid}
+            </Text>
+          </View>
+          <View style={styles.instructionsContainer}>
+            <Button title="Ligar/Desligar Wifi" onPress={this.wifiStatus} />
+
+            <Button title="Ver SSID" onPress={this.verSSID} />
+
+            <Button title="Força do Sinal" onPress={this.verLevel} />
+
+            <Button
+              title="Procurar Wifi"
+              onPress={this.getWifiNetworksOnPress.bind(this)}>
+              <Text style={styles.buttonText}>Available WIFI Networks</Text>
+            </Button>
+
+            <Button title="verIP" onPress={this.verIP} />
+          </View>
+          <Modal
+            visible={this.state.modalVisible}
+            swipeDirection={['up', 'down']} // can be string or an array
+            swipeThreshold={200} // default 100
+            onSwipeOut={event => {
+              this.setState({modalVisible: false});
+            }}
+            onTouchOutside={() => {
+              this.setState({modalVisible: false});
+            }}>
+            <ModalContent>
+              <ScrollView>
+                <View style={styles.instructionsContainer}>
+                  <Text>{'\n'}</Text>
+
+                  <Text style={styles.instructions}>SSID</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    underlineColorAndroid="transparent"
+                    onChangeText={event => (this.state.ssid = event)}
+                    value={this.state.ssid}
+                    placeholder={'ssid'}
+                  />
+                  <Text style={styles.instructions}>Password</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    secureTextEntry={true}
+                    underlineColorAndroid="transparent"
+                    onChangeText={event => (this.state.pass = event)}
+                    value={this.state.pass}
+                    placeholder={'password'}
+                  />
+                  <View>
+                    <Button
+                      title="Conectar"
+                      onPress={this.connectOnPress.bind(this)}
+                    />
+                    <Text style={styles.answer}>
+                      {this.state.ssidExist == null
+                        ? ''
+                        : this.state.ssidExist
+                        ? 'Network in range :)'
+                        : 'Network out of range :('}
+                    </Text>
+                  </View>
+                  {this.renderModal()}
+                </View>
+              </ScrollView>
+            </ModalContent>
+          </Modal>
         </View>
-      </ScrollView>
+      </View>
     );
   }
 }
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#2d2d2d',
   },
   engine: {
     position: 'absolute',
@@ -332,6 +357,18 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
+  },
+  bottomMessageHighlight: {
+    color: '#f4a63b',
+    paddingLeft: 10,
+  },
+  ImageIconStyle: {
+    padding: 20,
+    alignItems: 'center',
+    margin: 15,
+    height: 25,
+    width: 25,
+    resizeMode: 'stretch',
   },
 });
 
