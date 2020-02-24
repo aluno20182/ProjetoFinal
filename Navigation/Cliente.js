@@ -15,16 +15,6 @@ import ReceberDados from './ReceberDados';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
-const ClienteNav = createStackNavigator({
-  EnivarDados: {
-    screen: EnivarDados,
-  },
-  ReceberDados: {
-    screen: ReceberDados,
-  },
-});
-const Nav = createAppContainer(ClienteNav);
-
 class Cliente extends React.Component {
   static navigationOptions = {
     title: 'Cliente',
@@ -74,35 +64,31 @@ class Cliente extends React.Component {
     const {navigate} = this.props.navigation;
 
     return (
-      <Nav
-        ref={nav => (this.navigator = nav)}
-        >
-        <View style={styles.container}>
-          <View style={styles.sectionContainer}>
-            <View style={styles.instructionsContainer}>
-              <Button
-                title="Enviar Dados"
-                onPress={() => navigate('EnivarDados')}
-              />
-              <Text>{'\n'}</Text>
-            </View>
-
-            <Text>{'\n'}</Text>
-
-            <View style={styles.instructionsContainer}>
-              <Button
-                title="Receber Dados"
-                onPress={() => navigate('ReceberDados')}
-              />
-              <Text>{'\n'}</Text>
-            </View>
+      <View style={styles.container}>
+        <View style={styles.sectionContainer}>
+          <View style={styles.instructionsContainer}>
             <Button
-              title="Sign Out"
-              onPress={this.signOut}
-              style={styles.link}></Button>
+              title="Enviar Dados"
+              onPress={() => navigate('EnivarDados')}
+            />
+            <Text>{'\n'}</Text>
           </View>
+
+          <Text>{'\n'}</Text>
+
+          <View style={styles.instructionsContainer}>
+            <Button
+              title="Receber Dados"
+              onPress={() => navigate('ReceberDados')}
+            />
+            <Text>{'\n'}</Text>
+          </View>
+          <Button
+            title="Sign Out"
+            onPress={this.signOut}
+            style={styles.link}></Button>
         </View>
-      </Nav>
+      </View>
     );
   }
 }

@@ -1,9 +1,11 @@
-import {NavigationActions, createAppContainer} from 'react-navigation';
+import {NavigationActions, createAppContainer, StackNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import React from 'react';
 
 import Home from './Navigation/Home';
-import Cliente from './Navigation/Cliente';
+import EnviarDados from './Navigation/EnviarDados';
+import ReceberDados from './Navigation/ReceberDados';
+import Peers from './Navigation/Peers';
 
 import Auth from './Navigation/Auth/Auth';
 
@@ -19,17 +21,20 @@ const SwitchNav = createStackNavigator({
       header: null,
     },
   },
-/*   Home: {
+  Home: {
     screen: Home,
     navigationOptions: {
       header: null,
     },
-  }, */
-  Cliente: {
-    screen: Cliente,
-    navigationOptions: {
-      header: null,
-    },
+  },
+  EnviarDados: {
+    screen: EnviarDados,
+  },
+  ReceberDados: {
+    screen: ReceberDados,
+  },
+  Peers: {
+    screen: Peers,
   }
 })
 
@@ -48,7 +53,6 @@ class App extends React.Component {
     }
   }
   render() {
-    //const {navigate} =this.props.navigation;
     return (
       <Nav
         ref={nav => this.navigator = nav}

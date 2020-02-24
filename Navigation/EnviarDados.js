@@ -76,8 +76,7 @@ class EnviarDados extends React.Component {
   };
   render() {
     return (
-      <ScrollView>
-        <View style={styles.body}>
+        <View style={styles.container}>
           <View style={styles.sectionContainer}>
             <View style={styles.instructionsContainer}>
               <Text style={styles.highlight}>
@@ -107,14 +106,15 @@ class EnviarDados extends React.Component {
             </View>
           </View>
         </View>
-      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#2d2d2d',
   },
   engine: {
     position: 'absolute',
