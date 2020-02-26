@@ -1,4 +1,8 @@
-import {NavigationActions, createAppContainer, StackNavigator} from 'react-navigation';
+import {
+  NavigationActions,
+  createAppContainer,
+  StackNavigator,
+} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import React from 'react';
 
@@ -7,16 +11,19 @@ import EnviarDados from './Navigation/EnviarDados';
 import ReceberDados from './Navigation/ReceberDados';
 import Peers from './Navigation/Peers';
 
-import Auth from './Navigation/Auth/Auth';
+import SignIn from './Navigation/Auth/SignIn';
+import SignUp from './Navigation/Auth/SignUp';
 
-import Amplify, { Auth as AmplifyAuth  } from 'aws-amplify';
-import awsconfig from './aws-exports';
-Amplify.configure(awsconfig);
 
 const SwitchNav = createStackNavigator({
-
-  Auth: {
-    screen: Auth,
+  SignIn: {
+    screen: SignIn,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  SignUp: {
+    screen: SignUp,
     navigationOptions: {
       header: null,
     },
@@ -35,32 +42,27 @@ const SwitchNav = createStackNavigator({
   },
   Peers: {
     screen: Peers,
-  }
-})
-
+  },
+});
 
 const Nav = createAppContainer(SwitchNav);
-
 
 class App extends React.Component {
   checkAuth = async () => {
     try {
-      await AmplifyAuth.currentAuthenticatedUser()
+      await AmplifyAuth.currentAuthenticatedUser();
     } catch (err) {
-      this.navigator.dispatch(
-        NavigationActions.navigate({ routeName: 'Auth' })
-      )
+      this.navigator.dispatch(NavigationActions.navigate({routeName: 'Auth'}));
     }
-  }
+  };
   render() {
     return (
       <Nav
-        ref={nav => this.navigator = nav}
+        ref={nav => (this.navigator = nav)}
         onNavigationStateChange={this.checkAuth}
       />
-    )
+    );
   }
 }
 
 export default App;
-
