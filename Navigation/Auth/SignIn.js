@@ -1,85 +1,189 @@
 import React, {Component} from 'react';
-import {View, Text, TouchableHighlight, StyleSheet, Button} from 'react-native';
 
-import {Auth} from 'aws-amplify';
+import PropTypes from 'prop-types';
 
-import {Input, ActionButton} from '../../Components';
+import {
+  StyleSheet,
+  ScrollView,
+  Button,
+  View,
+  Text,
+  TextInput,
+  TouchableHighlight,
+  TouchableOpacity,
+  Image,
+  Logo,
+  ButtonText,
+  Input,
+  StatusBar,
+} from 'react-native';
+import {StackActions, NavigationActions} from 'react-navigation';
 
-class SignIn extends Component {
+import API from './../../Service/API';
+
+class SignIn extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
+
+  static propTypes = {
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func,
+      dispatch: PropTypes.func,
+    }).isRequired,
+  };
+
   state = {
-    username: '',
+    email: '',
     password: '',
+    error: '',
   };
-  onChangeText = (key, value) => {
-    this.setState({[key]: value});
+
+  handleEmailChange = email => {
+    this.setState({email});
   };
-  signIn = async () => {
-    const {username, password} = this.state;
-    try {
-      await Auth.signIn(username, password);
-      console.log('successfully signed in');
-      this.props.navigation.navigate('Home');
-    } catch (err) {
-      console.log('error signing up...', err);
+
+  handlePasswordChange = password => {
+    this.setState({password});
+  };
+
+  handleCreateAccountPress = () => {
+    this.props.navigation.navigate('SignUp');
+  };
+
+  handleSignInPress = async () => {
+    if (this.state.email.length === 0 || this.state.password.length === 0) {
+      this.setState(
+        {error: 'Preencha usuário e senha para continuar!'},
+        () => false,
+      );
+    } else {
+      try {
+
+        const response = await API.post('/sessions', {
+          email: this.state.email,
+          password: this.state.password,
+        });
+        console.log('ta')
+
+
+        await AsyncStorage.setItem('@MansNotHotApp:token', response.data.token);
+
+        const resetAction = StackActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({
+              routeName: 'Home',
+              params: {token: response.data.token},
+            }),
+          ],
+        });
+        this.props.navigation.dispatch(resetAction);
+      } catch (_err) {
+        console.log(_err);
+        this.setState({
+          error: 'Houve um problema com o login, verifique suas credenciais!',
+        });
+      }
     }
   };
-  showForgotPassword = () => {
-    this.props.toggleAuthType('showForgotPassword');
-  };
+
   render() {
     return (
-      <View>
-        {/*         <Button
-          title="Sign in with Google"
-          onPress={() => Auth.federatedSignIn({provider: 'Google'})}
+      <View style={styles.container}>
+        <StatusBar hidden />
+        <Image
+          style={styles.logo}
+          source={require('./amplify.png')}
+          resizeMode="contain"
         />
-        <Button
-          title="Sign in with Facebook"
-          onPress={() => Auth.federatedSignIn({provider: 'Facebook'})}
-        />
-        <Button
-          title="Sign in with Apple"
-          onPress={() => Auth.federatedSignIn({provider: 'SignInWithApple'})}
-        />
-        <Button
-          title="Launch Hosted UI"
-          onPress={() => Auth.federatedSignIn()}
-        /> */}
-        <Input
-          onChangeText={this.onChangeText}
-          type="username"
-          placeholder="Username"
+        <TextInput
+          style={styles.input}
+          placeholder="Endereço de e-mail"
+          value={this.state.email}
+          onChangeText={this.handleEmailChange}
+          autoCapitalize="none"
           autoCorrect={false}
         />
-        <Input
-          onChangeText={this.onChangeText}
-          type="password"
-          placeholder="Password"
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          value={this.state.password}
+          onChangeText={this.handlePasswordChange}
+          autoCapitalize="none"
+          autoCorrect={false}
           secureTextEntry
-          autoCorrect={false}
         />
-        <ActionButton title="Sign In" onPress={this.signIn} />
-        <View style={styles.buttonContainer}>
-          <TouchableHighlight onPress={this.showForgotPassword}>
-            <Text style={styles.bottomMessageHighlight}>
-              &nbsp;&nbsp;Forget your password?
-            </Text>
-          </TouchableHighlight>
-        </View>
+        {this.state.error.length !== 0 && (
+          <Text style={styles.errorMessage}>{this.state.error}</Text>
+        )}
+        <TouchableHighlight style={styles.button} onPress={this.handleSignInPress}>
+          <Text style={styles.buttonText}>Entrar</Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.signUpLink}
+          onPress={this.handleCreateAccountPress}>
+          <Text style={styles.signUpLinkText}>Criar conta grátis</Text>
+        </TouchableHighlight>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    paddingTop: 15,
+  container: {
+    flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: '#2d2d2d',
   },
-  bottomMessageHighlight: {
-    color: '#f4a63b',
-    paddingLeft: 10,
+  logo: {
+    height: 30,
+    marginBottom: 40,
+  },
+  input: {
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderRadius: 5,
+    backgroundColor: '#FFF',
+    alignSelf: 'stretch',
+    marginBottom: 15,
+    marginHorizontal: 20,
+    fontSize: 16,
+  },
+
+  errorMessage: {
+    textAlign: 'center',
+    color: '#ce2029',
+    fontSize: 16,
+    marginBottom: 15,
+    marginHorizontal: 20,
+  },
+  button: {
+    padding: 20,
+    borderRadius: 5,
+    backgroundColor: '#FC6663',
+    alignSelf: 'stretch',
+    margin: 15,
+    marginHorizontal: 20,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+
+  signUpLink: {
+    padding: 10,
+    marginTop: 20,
+  },
+
+  signUpLinkText: {
+    color: '#999',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 
