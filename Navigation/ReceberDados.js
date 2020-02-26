@@ -45,12 +45,13 @@ class ReceberDados extends React.Component {
     };
   }
 
-  ServiceCheckOnPress = () => {
+  //Apresenta o status da ligação wifi
+  verStatus = () => {
     wifi.isEnabled(isEnabled => {
       if (isEnabled) {
         this.setState({status: 'Ligado'});
         console.log(this.state.status);
-      } else {
+      } else if(!isEnabled) {
         this.setState({status: 'Desligado'});
         console.log(this.state.status);
       }
@@ -75,33 +76,33 @@ class ReceberDados extends React.Component {
     });
   }
 
-  refresh = () => {
-    this.setState({ssid: ssid});
-    this.ServiceCheckOnPress;
+  mudaEstado = () => {
+    this.verStatus();
+    this.verSSID();
   };
 
   verSSID = () => {
     wifi.getSSID(ssid => {
-      this.ServiceCheckOnPress;
-      if (this.state.ssid == '<unknown ssid>') {
-        this.setState({ssid: 'Desconected'});
-        console.log('Desconectado')
-      } else {
-        this.setState({ssid: ssid});
-        console.log(ssid);
-      }
+      //this.verStatus;
+      //if (this.state.ssid == '<unknown ssid>') {
+      //this.setState({ssid: 'Desconected'});
+      //console.log('Desconectado');
+      //} else {
+      this.setState({ssid: ssid});
+      console.log(ssid);
+      //}
 
       //ToastAndroid.show(ssid, ToastAndroid.SHORT);
     });
   };
 
   //dá o estado da ligação
-  connectionStatusOnPress = () => {
+  /*   connectionStatusOnPress = () => {
     wifi.connectionStatus(isConnected => {
       this.setState({status: isConnected});
       console.log(this.state.status);
     });
-  };
+  }; */
 
   //level is the detected signal level in dBm, also known as the RSSI. (Remember its a negative value)
   verLevel = () => {
@@ -120,16 +121,18 @@ class ReceberDados extends React.Component {
   };
 
   //liga wifi se estiver desligado, desliga caso contrario
-  wifiStatus = () => {
+  togglerWifi = () => {
     wifi.isEnabled(isEnabled => {
       if (isEnabled) {
         this.offWifi();
-        this.setState({status: isEnabled});
-        console.log(this.state.status);
+        this.mudaEstado();
+        this.setState({status: 'Desligado'});
+        //this.verSSID();
       } else if (!isEnabled) {
         this.onWifi();
-        this.setState({status: isEnabled});
-        console.log(this.state.status);
+        this.mudaEstado();
+        this.setState({status: 'Ligado'});
+        //this.verSSID();
       }
     });
   };
@@ -209,7 +212,7 @@ class ReceberDados extends React.Component {
             <Text style={styles.highlight}>WIFI{'\n'}</Text>
           </Text>
           <View style={styles.instructionsContainer}>
-            <TouchableOpacity onPress={this.refresh}>
+            <TouchableOpacity onPress={this.mudaEstado}>
               <Image
                 source={require('./refresh.png')}
                 style={styles.ImageIconStyle}
@@ -218,7 +221,7 @@ class ReceberDados extends React.Component {
 
             <Text
               style={styles.bottomMessageHighlight}
-              onLayout={this.ServiceCheckOnPress}>
+              onLayout={this.verStatus}>
               Wifi status: {this.state.status}
             </Text>
           </View>
@@ -228,11 +231,15 @@ class ReceberDados extends React.Component {
             </Text>
           </View>
           <View style={styles.instructionsContainer}>
-            <Button title="Ligar/Desligar Wifi" onPress={this.wifiStatus} />
+            <Button title="Ligar/Desligar Wifi" onPress={this.togglerWifi} />
 
+            {/*             <Button title="Ligar" onPress={this.onWifi} />
+
+            <Button title="Desligar Wifi" onPress={this.offWifi} />
+ */}
             <Button title="Ver SSID" onPress={this.verSSID} />
 
-            <Button title="Força do Sinal" onPress={this.verLevel} />
+            <Button title="Status" onPress={this.verStatus} />
 
             <Button
               title="Procurar Wifi"
