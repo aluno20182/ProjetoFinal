@@ -1,0 +1,38 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Users\\ricar\\Documents\\FACULDADE\\ProjetoFinal\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-v16\\values-v16.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\ricar\\.gradle\\caches\\transforms-2\\files-2.1\\5f0d03b1d4b6d2b4e201a133fe361be8\\res\\values-v16\\values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "65",
+                        "endOffsets": "116"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\ricar\\.gradle\\caches\\transforms-2\\files-2.1\\3e77eafe47bb856c2aa23480e306d0a1\\res\\values-v16\\values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "5",
+                        "endColumns": "12",
+                        "endOffsets": "223"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "121",
+                        "endLines": "6",
+                        "endColumns": "12",
+                        "endOffsets": "289"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,4 @@
+#Sat Nov 02 18:06:33 GMT 2019
+base.0=C\:\\Users\\ricar\\Documents\\FACULDADE\\ProjetoFinal\\android\\app\\build\\intermediates\\transforms\\dexMerger\\release\\0
+path.0=classes.dex
+renamed.0=classes.dex

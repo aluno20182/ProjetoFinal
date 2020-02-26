@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="5" by="lint 3.4.2">
+
+    <issue
+        id="ProtectedPermissions"
+        severity="Error"
+        message="Permission is only granted to system apps"
+        category="Correctness"
+        priority="5"
+        summary="Using system app permission"
+        explanation="Permissions with the protection level signature, privileged or signatureOrSystem are only granted to system apps. If an app is a regular non-system app, it will never be able to use these permissions."
+        errorLine1="    &lt;uses-permission android:name=&quot;android.permission.WRITE_SETTINGS&quot; />"
+        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Users\ricar\Documents\FACULDADE\ProjetoFinal\android\app\src\main\AndroidManifest.xml"
+            line="5"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="GradleDynamicVersion"
+        severity="Warning"
+        message="Avoid using + in version numbers; can lead to unpredictable and unrepeatable builds (com.facebook.react:react-native:+)"
+        category="Correctness"
+        priority="4"
+        summary="Gradle Dynamic Version"
+        explanation="Using `+` in dependencies lets you automatically pick up the latest available version rather than a specific, named version. However, this is not recommended; your builds are not repeatable; you may have tested with a slightly different version than what the build server used. (Using a dynamic version as the major version number is more problematic than using it in the minor version position.)"
+        errorLine1="    implementation &quot;com.facebook.react:react-native:+&quot;  // From node_modules"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Users\ricar\Documents\FACULDADE\ProjetoFinal\android\app\build.gradle"
+            line="184"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.integer.react_native_dev_server_port` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds.&#xA;&#xA;The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.&#xA;&#xA;You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests=true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests=true.">
+        <location
+            file="C:\Users\ricar\Documents\FACULDADE\ProjetoFinal\android\app\build.gradle"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.integer.react_native_inspector_proxy_port` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds.&#xA;&#xA;The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.&#xA;&#xA;You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests=true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests=true.">
+        <location
+            file="C:\Users\ricar\Documents\FACULDADE\ProjetoFinal\android\app\build.gradle"/>
+    </issue>
+
+    <issue
+        id="GoogleAppIndexingWarning"
+        severity="Warning"
+        message="App is not indexable by Google Search; consider adding at least one Activity with an ACTION-VIEW intent filter. See issue explanation for more details."
+        category="Usability"
+        priority="5"
+        summary="Missing support for Firebase App Indexing"
+        explanation="Adds URLs to get your app into the Google index, to get installs and traffic to your app from Google Search."
+        url="https://g.co/AppIndexing/AndroidStudio"
+        urls="https://g.co/AppIndexing/AndroidStudio"
+        errorLine1="    &lt;application"
+        errorLine2="    ^">
+        <location
+            file="C:\Users\ricar\Documents\FACULDADE\ProjetoFinal\android\app\src\main\AndroidManifest.xml"
+            line="13"
+            column="5"/>
+    </issue>
+
+</issues>
