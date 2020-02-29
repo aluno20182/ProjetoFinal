@@ -14,7 +14,6 @@ import Peers from './Navigation/Peers';
 import SignIn from './Navigation/Auth/SignIn';
 import SignUp from './Navigation/Auth/SignUp';
 
-
 const SwitchNav = createStackNavigator({
   SignIn: {
     screen: SignIn,
