@@ -6,16 +6,16 @@ import {
   View,
   Text,
   PermissionsAndroid,
+  TouchableHighlight,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {Auth} from 'aws-amplify';
+import axios from 'axios';
 
 import EnivarDados from './EnviarDados';
 import ReceberDados from './ReceberDados';
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import {ActionButton} from '../Components';
 
 class Home extends React.Component {
   static navigationOptions = {
@@ -32,19 +32,31 @@ class Home extends React.Component {
   }
 
   signOut = async () => {
-    try {
-      await Auth.signOut();
-      this.props.navigation.navigate('Auth');
-    } catch (err) {
-      console.log('error signing out...', err);
-    }
+    await fetch('http://192.168.1.7:3000/users/me/logout', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.email,
+        password: this.state.password,
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+
+        AsyncStorage.removeItem('token', res.token);
+        this.props.navigation.navigate('SignIn');
+      })
+      .catch(err => console.log(err));
   };
 
   goToEnviarDados = async () => {
     try {
       this.props.navigation.navigate('');
       console.log('Enviar Dados');
-
     } catch (err) {
       console.log('error signing out...', err);
     }
@@ -71,28 +83,25 @@ class Home extends React.Component {
     }
   }
 
-
-
   render() {
     const {navigate} = this.props.navigation;
 
     return (
       <View style={styles.container}>
         <View style={styles.sectionContainer}>
-          <View >
-            <ActionButton
-              title="Enviar Dados"
-              onPress={() => navigate('EnviarDados')}
-            />
-            <ActionButton 
-              title="Receber Dados" 
-              onPress={() => navigate('ReceberDados')}
-            />
-            <ActionButton
-              title="Sign Out"
-              onPress={this.signOut}
-              style={styles.link}></ActionButton>
-          </View>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={() => navigate('EnviarDados')}>
+            <Text style={styles.buttonText}>Enviar Dados</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={() => navigate('ReceberDados')}>
+            <Text style={styles.buttonText}>Receber Dados</Text>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.signOut} style={styles.link}>
+            <Text style={styles.buttonText}>Sair</Text>
+          </TouchableHighlight>
         </View>
       </View>
     );
@@ -135,21 +144,18 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   button: {
-    padding: 5,
-    width: 120,
-    alignItems: 'center',
-    backgroundColor: 'blue',
-    marginRight: 15,
-  },
-  bigButton: {
-    padding: 5,
-    width: 180,
-    alignItems: 'center',
-    backgroundColor: 'blue',
-    marginRight: 15,
+    padding: 20,
+    borderRadius: 5,
+    backgroundColor: '#FC6663',
+    alignSelf: 'stretch',
+    margin: 15,
+    marginHorizontal: 20,
   },
   buttonText: {
-    color: 'white',
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
   },
   footer: {
     color: Colors.dark,
@@ -158,10 +164,6 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
-  },
-  link: {
-    color: 'blue',
-    marginVertical: 5,
   },
 });
 export default Home;

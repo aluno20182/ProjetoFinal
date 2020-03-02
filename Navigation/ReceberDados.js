@@ -19,17 +19,24 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import wifi from 'react-native-android-wifi';
 import AndroidOpenSettings from 'react-native-android-open-settings';
 import Modal, {ModalContent} from 'react-native-modals';
+import {fromLeft} from 'react-navigation-transitions';
 class ReceberDados extends React.Component {
   static navigationOptions = {
-    title: 'ReceberDados',
+    title: 'Receber Dados',
+    headerStyle: {
+      backgroundColor: '#08a092',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+    transitionConfig: () => fromLeft(),
   };
 
-  componentDidMount(){
-    this.refresh();
-  }
+  intervalo = 0;
 
-  refresh = () =>{
-    setInterval(this.verStatus,1000);
+  componentDidMount() {
+    this.intervalo = setInterval(this.verStatus, 5000);
   }
 
   constructor(props) {
@@ -54,8 +61,6 @@ class ReceberDados extends React.Component {
     };
   }
 
-
-
   //Apresenta o status da conexão
   verStatus = () => {
     wifi.isEnabled(isEnabled => {
@@ -65,7 +70,7 @@ class ReceberDados extends React.Component {
         console.log(this.state.enable);
       } else if (!isEnabled) {
         this.setState({enable: 'Desligado'});
-        this.setState({ssid: 'Não está conectado!'})
+        this.setState({ssid: 'Não está conectado!'});
         console.log(this.state.enable);
       }
     });
@@ -93,19 +98,31 @@ class ReceberDados extends React.Component {
   }
 
   mudaEstado = () => {
-    setTimeout(this.verStatus(),5000);
+    setTimeout(this.verStatus(), 5000);
     //this.verSSID();
   };
 
   verSSID = () => {
     wifi.getSSID(ssid => {
       this.verStatus;
-      if (this.state.enable == 'Ligado') {
-      this.setState({ssid: ssid});
-      console.log(ssid);
-      } else if(this.state.enable == 'Desligado' || this.state.ssid == '<unknown ssid>'){
-      this.setState({ssid: 'Não está conectado!'})
-      console.log(ssid);
+      if (
+        this.state.enable == 'Ligado' &&
+        this.state.ssid == '<unknown ssid>'
+      ) {
+        this.setState({ssid: 'Não está conectado!'});
+        console.log(ssid);
+      } else if (
+        this.state.enable == 'Ligado' &&
+        this.state.ssid != '<unknown ssid>'
+      ) {
+        this.setState({ssid: ssid});
+        console.log(ssid);
+      } else if (
+        this.state.enable == 'Desligado' ||
+        this.state.ssid == '<unknown ssid>'
+      ) {
+        this.setState({ssid: 'Não está conectado!'});
+        console.log(ssid);
       }
 
       //ToastAndroid.show(ssid, ToastAndroid.SHORT);
@@ -172,6 +189,7 @@ class ReceberDados extends React.Component {
   };
 
   getWifiNetworksOnPress() {
+    //clearInterval(this.intervalo)
     console.log(this.state.status);
     this.verStatus();
     if (this.state.enable == 'Ligado') {
@@ -246,13 +264,17 @@ class ReceberDados extends React.Component {
     });
   };
 
+  /*   goToEnviar = () =>{
+    this.props.navigation.navigate('EnviarDados');
+  } */
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.sectionContainer}>
           <Text style={styles.textHighlight}>WIFI</Text>
           <View style={styles.instructionsContainer}>
-{/*             <TouchableOpacity onPress={this.mudaEstado}>
+            {/*              <TouchableOpacity onPress={this.goToEnviar}>
               <Image
                 source={require('./refresh.png')}
                 style={styles.ImageIconStyle}
@@ -308,14 +330,22 @@ class ReceberDados extends React.Component {
             onSwipeOut={event => {
               this.setState({modalVisible: false});
             }}
+            onBackButtonPress={() => {
+              this.setState({modalVisible: false});
+            }}
             onTouchOutside={() => {
               this.setState({modalVisible: false});
             }}>
-            <ModalContent>
+            <ModalContent style={styles.modal}>
               <ScrollView>
-                <View style={styles.container}>
+                <View>
                   <Text>{'\n'}</Text>
-
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({visibleModal: false});
+                    }}>
+                    <Text>Exit</Text>
+                  </TouchableOpacity>
                   <Text style={styles.textHighlightS}>SSID</Text>
                   <TextInput
                     style={styles.input}
@@ -361,6 +391,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#2d2d2d',
+  },
+  modal: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#2d2d2d',
+    width: 300,
+    height: 300,
   },
   engine: {
     position: 'absolute',

@@ -9,6 +9,7 @@ import {
   ListView,
   StyleSheet,
   ScrollView,
+  TouchableHighlight,
 } from 'react-native';
 //Third party
 import Hotspot from 'react-native-wifi-hotspot';
@@ -16,7 +17,14 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 class EnviarDados extends React.Component {
   static navigationOptions = {
-    title: 'EnviarDados',
+    title: 'Enviar Dados',
+    headerStyle: {
+      backgroundColor: '#08a092',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
   };
   constructor(props) {
     super(props);
@@ -47,12 +55,16 @@ class EnviarDados extends React.Component {
   //go to create screen
   goToCreate = () => {
     /* this.props.navigation.navigate('CreateHotspot'); */
-    var hotspot = { SSID: 'HelloWorld', password: 'helloworld' }
-    Hotspot.create(hotspot, () => {
-      ToastAndroid.show("Hotspot Created", ToastAndroid.SHORT);
-    }, (err) => {
-      ToastAndroid.show("Deu merda!", ToastAndroid.SHORT);
-    })
+    var hotspot = {SSID: 'HelloWorld', password: 'helloworld'};
+    Hotspot.create(
+      hotspot,
+      () => {
+        ToastAndroid.show('Hotspot Created', ToastAndroid.SHORT);
+      },
+      err => {
+        ToastAndroid.show('Deu merda!', ToastAndroid.SHORT);
+      },
+    );
   };
 
   //fetch your hotspot settings.
@@ -63,10 +75,10 @@ class EnviarDados extends React.Component {
         ToastAndroid.show(config.ssid, ToastAndroid.SHORT);
       },
       err => {
-        console.log(config.ssid)
+        console.log(config.ssid);
 
         ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
-      }
+      },
     );
   };
 
@@ -76,36 +88,38 @@ class EnviarDados extends React.Component {
   };
   render() {
     return (
-        <View style={styles.container}>
-          <View style={styles.sectionContainer}>
-            <View style={styles.instructionsContainer}>
-              <Text style={styles.highlight}>
-                Ativa e verifica se já está aberto
-              </Text>
-              <Button title="Ativar" onPress={this.doEnable} />
-            </View>
-            <View style={styles.instructionsContainer}>
-              <Text style={styles.highlight}>
-                Desativa e verifica se já está fechado
-              </Text>
-              <Button title="Desativar" onPress={this.doDisable} />
-            </View>
-            <View style={styles.instructionsContainer}>
-              <Text style={styles.highlight}>
-                Configura as opções do HotsPot
-              </Text>
-              <Button title="Criar" onPress={this.goToCreate} />
-            </View>
-            <View style={styles.instructionsContainer}>
-              <Text style={styles.highlight}>Fetch das opções de HotsPot</Text>
-              <Button title="Fetch" onPress={this.doFetch} />
-            </View>
-            <View style={styles.instructionsContainer}>
-              <Text style={styles.highlight}>Mostra todos os Peers</Text>
-              <Button title="Peers" onPress={this.goToPeers} />
-            </View>
-          </View>
+      <View style={styles.container}>
+        <View style={styles.sectionContainer}>
+          <TouchableHighlight style={styles.button} onPress={this.doEnable}>
+            <Text style={styles.buttonText}>
+              {' '}
+              Ativa e verifica se já está aberto
+            </Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight style={styles.button} onPress={this.doDisable}>
+            <Text style={styles.buttonText}>
+              {' '}
+              Desativa e verifica se já está fechado
+            </Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight style={styles.button} onPress={this.goToCreate}>
+            <Text style={styles.buttonText}>
+              {' '}
+              Configura as opções do HotsPot
+            </Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight style={styles.button} onPress={this.doFetch}>
+            <Text style={styles.buttonText}> Fetch das opções de HotsPot</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight style={styles.button} onPress={this.goToPeers}>
+            <Text style={styles.buttonText}> Mostra todos os Peers</Text>
+          </TouchableHighlight>
         </View>
+      </View>
     );
   }
 }
@@ -147,21 +161,18 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   button: {
-    padding: 5,
-    width: 120,
-    alignItems: 'center',
-    backgroundColor: 'blue',
-    marginRight: 15,
-  },
-  bigButton: {
-    padding: 5,
-    width: 180,
-    alignItems: 'center',
-    backgroundColor: 'blue',
-    marginRight: 15,
+    padding: 20,
+    borderRadius: 5,
+    backgroundColor: '#FC6663',
+    alignSelf: 'stretch',
+    margin: 15,
+    marginHorizontal: 20,
   },
   buttonText: {
-    color: 'white',
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
   },
   footer: {
     color: Colors.dark,
