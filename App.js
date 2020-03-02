@@ -26,7 +26,7 @@ const SwitchNav = createStackNavigator({
     navigationOptions: {
       header: null,
     },
-  },
+  }, 
   Home: {
     screen: Home,
     navigationOptions: {

@@ -28,6 +28,7 @@
     "react-native-wifi-hotspot": "git://github.com/assemmohamedali/react-native-wifi-hotspot.git",
     "react-navigation": "^4.2.1",
     "react-navigation-stack": "^1.10.3",
+    "react-navigation-transitions": "^1.0.12",
     "reactotron-react-native": "^4.0.3",
     "styled-components": "^5.0.1",
     "yarn": "^1.22.0"
