@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+//import axios from 'axios';
 
-import API from '../../Service/API';
 import {
   StyleSheet,
   Button,
@@ -12,7 +12,11 @@ import {
   TouchableHighlight,
   Image,
   StatusBar,
+  StackActions,
+  NavigationActions,
 } from 'react-native';
+
+const axios = require('axios');
 
 class SignUp extends Component {
   static navigationOptions = {
@@ -28,16 +32,16 @@ class SignUp extends Component {
   };
 
   state = {
-    username: 'ricardovp',
-    email: 'ricardovalentepinheiro@gmail.com',
+    username: 'teste',
+    email: 'a@aa.com',
     password: 'teste123',
     error: '',
     success: '',
   };
 
-  handleUsernameChange = username => {
-    this.setState({username});
-  };
+  /*handleUsernameChange = name => {
+    this.setState({name});
+  };*/
 
   handleEmailChange = email => {
     this.setState({email});
@@ -51,7 +55,9 @@ class SignUp extends Component {
     this.props.navigation.goBack();
   };
 
+  
   handleSignUpPress = async () => {
+
     if (this.state.email.length === 0 || this.state.password.length === 0) {
       this.setState(
         {error: 'Preencha todos os campos para continuar!'},
@@ -59,18 +65,28 @@ class SignUp extends Component {
       );
     } else {
       try {
-        await API.post('/users', {
-          username: this.state.username,
-          email: this.state.email,
-          password: this.state.password,
-        });
+        await fetch('http://192.168.1.7:3000/users', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: this.state.username,
+            email: this.state.email,
+            password: this.state.password,
+          }),
+        }).then((response) => response.json());
+        
+        console.log('ta');
+
 
         this.setState({
           success: 'Conta criada com sucesso! Redirecionando para o login',
           error: '',
         });
 
-        setTimeout(this.goToLogin, 0);
+        setTimeout(this.goToLogin, 2500);
       } catch (_err) {
         console.log(_err);
         this.setState({
@@ -82,26 +98,27 @@ class SignUp extends Component {
   };
 
   goToLogin = () => {
-    const resetAction = StackActions.reset({
+/*     const resetAction = StackActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({routeName: 'SignIn'})],
     });
-    this.props.navigation.dispatch(resetAction);
+    this.props.navigation.dispatch(resetAction); */
+    this.props.navigation.navigate('SignIn');
   };
 
   render() {
     return (
       <View style={styles.container}>
         <StatusBar hidden />
-        <Image
+{/*         <Image
           style={styles.logo}
           source={require('./amplify.png')}
           resizeMode="contain"
-        />
+        /> 
         {this.state.success.length !== 0 && (
           <Text style={styles.successMessage}>{this.state.success}</Text>
-        )}
-        <TextInput
+        )}*/}
+       <TextInput
           style={styles.input}
           placeholder="Nome de usuário"
           value={this.state.username}
@@ -126,9 +143,9 @@ class SignUp extends Component {
           autoCorrect={false}
           secureTextEntry
         />
-        {this.state.error.length !== 0 && (
+        {/* {this.state.error.length !== 0 && (
           <Text style={styles.errorMessage}>{this.state.error}</Text>
-        )}
+        )} */}
         <TouchableHighlight style={styles.button} onPress={this.handleSignUpPress}>
           <Text style={styles.buttonText}>Criar conta</Text>
         </TouchableHighlight>

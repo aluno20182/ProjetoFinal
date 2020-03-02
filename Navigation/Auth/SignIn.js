@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 
 import PropTypes from 'prop-types';
 
@@ -16,10 +17,10 @@ import {
   ButtonText,
   Input,
   StatusBar,
+  StackActions,
+  NavigationActions,
+  AsyncStorage,
 } from 'react-native';
-import {StackActions, NavigationActions} from 'react-navigation';
-
-import API from './../../Service/API';
 
 class SignIn extends React.Component {
   static navigationOptions = {
@@ -34,9 +35,10 @@ class SignIn extends React.Component {
   };
 
   state = {
-    email: '',
-    password: '',
+    email: 'a@aa.com',
+    password: 'teste123',
     error: '',
+    success: '',
   };
 
   handleEmailChange = email => {
@@ -52,51 +54,44 @@ class SignIn extends React.Component {
   };
 
   handleSignInPress = async () => {
-    if (this.state.email.length === 0 || this.state.password.length === 0) {
-      this.setState(
-        {error: 'Preencha usuário e senha para continuar!'},
-        () => false,
-      );
-    } else {
-      try {
 
-        const response = await API.post('/sessions', {
-          email: this.state.email,
-          password: this.state.password,
-        });
-        console.log('ta')
+    //Enviar pedidos
+    await fetch('http://192.168.1.7:3000/users/login', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.email,
+        password: this.state.password,
+      }),
+    }).then(res => res.json())
+      .then(res => {
+        console.log(res);
 
+          AsyncStorage.setItem('token', res.token);
+          this.props.navigation.navigate('Home');
 
-        await AsyncStorage.setItem('@MansNotHotApp:token', response.data.token);
+        
+      })
+      .catch(err => console.log(err))
+      
+  };
 
-        const resetAction = StackActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({
-              routeName: 'Home',
-              params: {token: response.data.token},
-            }),
-          ],
-        });
-        this.props.navigation.dispatch(resetAction);
-      } catch (_err) {
-        console.log(_err);
-        this.setState({
-          error: 'Houve um problema com o login, verifique suas credenciais!',
-        });
-      }
-    }
+  handleNotLoggedIn = async () => {
+    this.props.navigation.navigate('ReceberDados');
   };
 
   render() {
     return (
       <View style={styles.container}>
         <StatusBar hidden />
-        <Image
+        {/*         <Image
           style={styles.logo}
           source={require('./amplify.png')}
           resizeMode="contain"
-        />
+        /> */}
         <TextInput
           style={styles.input}
           placeholder="Endereço de e-mail"
@@ -117,13 +112,20 @@ class SignIn extends React.Component {
         {this.state.error.length !== 0 && (
           <Text style={styles.errorMessage}>{this.state.error}</Text>
         )}
-        <TouchableHighlight style={styles.button} onPress={this.handleSignInPress}>
+        <TouchableHighlight
+          style={styles.button}
+          onPress={this.handleSignInPress}>
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableHighlight>
         <TouchableHighlight
           style={styles.signUpLink}
           onPress={this.handleCreateAccountPress}>
           <Text style={styles.signUpLinkText}>Criar conta grátis</Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.buttonD}
+          onPress={this.handleNotLoggedIn}>
+          <Text style={styles.buttonText}>Sem ligação à Internet?</Text>
         </TouchableHighlight>
       </View>
     );
@@ -163,6 +165,14 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 5,
     backgroundColor: '#FC6663',
+    alignSelf: 'stretch',
+    margin: 15,
+    marginHorizontal: 20,
+  },
+  buttonD: {
+    padding: 30,
+    borderRadius: 5,
+    backgroundColor: '#08a092',
     alignSelf: 'stretch',
     margin: 15,
     marginHorizontal: 20,
