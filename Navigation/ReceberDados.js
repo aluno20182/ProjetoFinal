@@ -189,7 +189,7 @@ class ReceberDados extends React.Component {
   };
 
   getWifiNetworksOnPress() {
-    //clearInterval(this.intervalo)
+    clearInterval(this.intervalo)
     console.log(this.state.status);
     this.verStatus();
     if (this.state.enable == 'Ligado') {
