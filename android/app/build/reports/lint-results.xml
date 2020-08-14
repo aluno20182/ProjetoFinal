@@ -2,19 +2,19 @@
 <issues format="5" by="lint 3.4.2">
 
     <issue
-        id="ProtectedPermissions"
-        severity="Error"
-        message="Permission is only granted to system apps"
+        id="UnusedAttribute"
+        severity="Warning"
+        message="Attribute `usesCleartextTraffic` is only used in API level 23 and higher (current min is 16)"
         category="Correctness"
-        priority="5"
-        summary="Using system app permission"
-        explanation="Permissions with the protection level signature, privileged or signatureOrSystem are only granted to system apps. If an app is a regular non-system app, it will never be able to use these permissions."
-        errorLine1="    &lt;uses-permission android:name=&quot;android.permission.WRITE_SETTINGS&quot; />"
-        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        priority="6"
+        summary="Attribute unused on older versions"
+        explanation="This check finds attributes set in XML files that were introduced in a version newer than the oldest version targeted by your application (with the `minSdkVersion` attribute).&#xA;&#xA;This is not an error; the application will simply ignore the attribute. However, if the attribute is important to the appearance or functionality of your application, you should consider finding an alternative way to achieve the same result with only available attributes, and then you can optionally create a copy of the layout in a layout-vNN folder which will be used on API NN or higher where you can take advantage of the newer attribute.&#xA;&#xA;Note: This check does not only apply to attributes. For example, some tags can be unused too, such as the new `&lt;tag>` element in layouts introduced in API 21."
+        errorLine1="      android:usesCleartextTraffic=&quot;true&quot;>"
+        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="C:\Users\ricar\Documents\FACULDADE\ProjetoFinal\android\app\src\main\AndroidManifest.xml"
-            line="5"
-            column="22"/>
+            file="C:\Users\ricar\Documentos\ProjetoFinal\android\app\src\main\AndroidManifest.xml"
+            line="18"
+            column="7"/>
     </issue>
 
     <issue
@@ -28,8 +28,8 @@
         errorLine1="    implementation &quot;com.facebook.react:react-native:+&quot;  // From node_modules"
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="C:\Users\ricar\Documents\FACULDADE\ProjetoFinal\android\app\build.gradle"
-            line="184"
+            file="C:\Users\ricar\Documentos\ProjetoFinal\android\app\build.gradle"
+            line="188"
             column="5"/>
     </issue>
 
@@ -42,7 +42,7 @@
         summary="Unused resources"
         explanation="Unused resources make applications larger and slow down builds.&#xA;&#xA;The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.&#xA;&#xA;You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests=true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests=true.">
         <location
-            file="C:\Users\ricar\Documents\FACULDADE\ProjetoFinal\android\app\build.gradle"/>
+            file="C:\Users\ricar\Documentos\ProjetoFinal\android\app\build.gradle"/>
     </issue>
 
     <issue
@@ -54,25 +54,7 @@
         summary="Unused resources"
         explanation="Unused resources make applications larger and slow down builds.&#xA;&#xA;The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.&#xA;&#xA;You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests=true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests=true.">
         <location
-            file="C:\Users\ricar\Documents\FACULDADE\ProjetoFinal\android\app\build.gradle"/>
-    </issue>
-
-    <issue
-        id="GoogleAppIndexingWarning"
-        severity="Warning"
-        message="App is not indexable by Google Search; consider adding at least one Activity with an ACTION-VIEW intent filter. See issue explanation for more details."
-        category="Usability"
-        priority="5"
-        summary="Missing support for Firebase App Indexing"
-        explanation="Adds URLs to get your app into the Google index, to get installs and traffic to your app from Google Search."
-        url="https://g.co/AppIndexing/AndroidStudio"
-        urls="https://g.co/AppIndexing/AndroidStudio"
-        errorLine1="    &lt;application"
-        errorLine2="    ^">
-        <location
-            file="C:\Users\ricar\Documents\FACULDADE\ProjetoFinal\android\app\src\main\AndroidManifest.xml"
-            line="13"
-            column="5"/>
+            file="C:\Users\ricar\Documentos\ProjetoFinal\android\app\build.gradle"/>
     </issue>
 
 </issues>

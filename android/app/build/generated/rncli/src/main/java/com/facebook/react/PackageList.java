@@ -11,9 +11,6 @@ import com.facebook.react.shell.MainReactPackage;
 import java.util.Arrays;
 import java.util.ArrayList;
 
-import com.projetofinal.BuildConfig;
-import com.projetofinal.R;
-
 // amazon-cognito-identity-js
 import com.amazonaws.RNAWSCognitoPackage;
 // react-native-android-open-settings
@@ -24,6 +21,8 @@ import com.devstepbcn.wifi.AndroidWifiPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 // react-native-screens
 import com.swmansion.rnscreens.RNScreensPackage;
+// react-native-wifi-and-hotspot-wizard
+import com.reactnativewifiandhotspotwizard.RNWifiAndHotspotWizardPackage;
 // react-native-wifi-hotspot
 import reactnative.hotspot.HotspotPackage;
 
@@ -76,6 +75,7 @@ public class PackageList {
       new AndroidWifiPackage(),
       new RNGestureHandlerPackage(),
       new RNScreensPackage(),
+      new RNWifiAndHotspotWizardPackage(),
       new HotspotPackage()
     ));
   }
