@@ -1,3 +1,4 @@
+console.disableYellowBox = true;
 import {
   NavigationActions,
   createAppContainer,
@@ -14,6 +15,7 @@ import Peers from './Navigation/Peers';
 import SignIn from './Navigation/Auth/SignIn';
 import SignUp from './Navigation/Auth/SignUp';
 
+
 const SwitchNav = createStackNavigator({
   SignIn: {
     screen: SignIn,
@@ -29,9 +31,7 @@ const SwitchNav = createStackNavigator({
   }, 
   Home: {
     screen: Home,
-    navigationOptions: {
-      header: null,
-    },
+
   },
   EnviarDados: {
     screen: EnviarDados,
@@ -47,6 +47,12 @@ const SwitchNav = createStackNavigator({
 const Nav = createAppContainer(SwitchNav);
 
 class App extends React.Component {
+
+  constructor(props) {
+    super(props)
+
+  }
+  
   checkAuth = async () => {
     try {
       await AmplifyAuth.currentAuthenticatedUser();

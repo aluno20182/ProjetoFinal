@@ -18,6 +18,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 class Cliente extends React.Component {
   static navigationOptions = {
     title: 'Cliente',
+
   };
 
   constructor(props) {

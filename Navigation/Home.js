@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import axios from 'axios';
+import url from '../Url';
+
 
 import EnivarDados from './EnviarDados';
 import ReceberDados from './ReceberDados';
@@ -20,6 +22,13 @@ import {createStackNavigator} from 'react-navigation-stack';
 class Home extends React.Component {
   static navigationOptions = {
     title: 'Home',
+    headerStyle: {
+      backgroundColor: '#08a092',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
   };
   constructor(props) {
     super(props);
@@ -32,7 +41,7 @@ class Home extends React.Component {
   }
 
   signOut = async () => {
-    await fetch('http://192.168.1.7:3000/users/me/logout', {
+    await fetch(url + '/users/me/logout', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
