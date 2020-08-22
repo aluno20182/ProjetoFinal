@@ -1,7 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
-//import axios from 'axios';
+import url from '../../Url';
 
 import {
   StyleSheet,
@@ -31,41 +30,105 @@ class SignUp extends Component {
     }).isRequired,
   };
 
-  state = {
-    username: 'teste',
-    email: 'a@aa.com',
-    password: 'teste123',
-    error: '',
-    success: '',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: 'btest',
+      email: 'b@bb.com',
+      password: 'teste123',
+      firstname: 'B',
+      lastname: 'BB',
+      points: '',
+      error: '',
+      success: '',
+    };
+  }
+
+  username(event) {
+    this.setState({username: event.nativeEvent.text});
+  }
+  firstname(event) {
+    this.setState({firstname: event.nativeEvent.text});
+  }
+  lastname(event) {
+    this.setState({lastname: event.nativeEvent.text});
+  }
+  email(event) {
+    this.setState({email: event.nativeEvent.text});
+  }
+  password(text) {
+    this.setState({password: text});
+  }
+
+
 
   /*handleUsernameChange = name => {
     this.setState({name});
   };*/
 
   handleEmailChange = email => {
-    this.setState({email});
+    this.setState({ email });
   };
 
   handlePasswordChange = password => {
-    this.setState({password});
+    this.setState({ password });
+  };
+
+  handleFirstNameChange = firstname => {
+    this.setState({ firstname });
+  };
+  handleLastNameChange = lastname => {
+    this.setState({ lastname });
   };
 
   handleBackToLoginPress = () => {
     this.props.navigation.goBack();
   };
 
-  
-  handleSignUpPress = async () => {
 
+  signUp() {
+    let email = this.state.email;
+    let password = this.state.password;
+    let first = this.state.first;
+    let last = this.state.last;
+    if (
+      email === '' ||
+      password === '' ||
+      first === '' ||
+      last === '' 
+    ) {
+      this.setState({
+        error: 'Por favor, preencha todos os campos!',
+      });
+    }
+    else {
+      console.log('match password');
+      this.handleSignUpPress(email, password, first, last);
+    }
+  }
+
+  renderButton() {
+
+    return (
+      <TouchableHighlight
+        style={styles.loginBtn}
+        onPress={() => this.signUp()}
+        underlayColor="#99d9f4">
+        <Text style={styles.loginText}>Criar Conta</Text>
+      </TouchableHighlight>
+    );
+  }
+
+  handleSignUpPress = async (email, password, first, last) => {
     if (this.state.email.length === 0 || this.state.password.length === 0) {
       this.setState(
-        {error: 'Preencha todos os campos para continuar!'},
+        { error: 'Preencha todos os campos para continuar!' },
         () => false,
       );
     } else {
       try {
-        await fetch('http://192.168.1.7:3000/users', {
+
+        await fetch(url + '/createaccount', {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -75,9 +138,11 @@ class SignUp extends Component {
             username: this.state.username,
             email: this.state.email,
             password: this.state.password,
+            firstname: this.state.firstname,
+            lastname: this.state.lastname,
           }),
         }).then((response) => response.json());
-        
+
         console.log('ta');
 
 
@@ -91,70 +156,94 @@ class SignUp extends Component {
         console.log(_err);
         this.setState({
           error:
-            'Houve um problema com o cadastro, verifique os dados preenchidos!',
+            'Houve um problema com o registo, verifique os dados preenchidos!',
         });
       }
-    }
+    } 
   };
 
   goToLogin = () => {
-/*     const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({routeName: 'SignIn'})],
-    });
-    this.props.navigation.dispatch(resetAction); */
+    /*     const resetAction = StackActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({routeName: 'SignIn'})],
+        });
+        this.props.navigation.dispatch(resetAction); */
     this.props.navigation.navigate('SignIn');
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar hidden />
-{/*         <Image
-          style={styles.logo}
-          source={require('./amplify.png')}
-          resizeMode="contain"
-        /> 
-        {this.state.success.length !== 0 && (
-          <Text style={styles.successMessage}>{this.state.success}</Text>
-        )}*/}
-       <TextInput
-          style={styles.input}
-          placeholder="Nome de usuário"
-          value={this.state.username}
-          onChangeText={this.handleUsernameChange}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Endereço de e-mail"
-          value={this.state.email}
-          onChangeText={this.handleEmailChange}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Senha"
-          value={this.state.password}
-          onChangeText={this.handlePasswordChange}
-          autoCapitalize="none"
-          autoCorrect={false}
-          secureTextEntry
-        />
-        {/* {this.state.error.length !== 0 && (
-          <Text style={styles.errorMessage}>{this.state.error}</Text>
-        )} */}
-        <TouchableHighlight style={styles.button} onPress={this.handleSignUpPress}>
-          <Text style={styles.buttonText}>Criar conta</Text>
-        </TouchableHighlight>
+        <View style={styles.intro}>
+          <Text style={styles.logo}>Por favor, preencha todos os campos!</Text>
+        </View>
+        <View style={styles.inputView}>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Nome de utilizador"
+            placeholderTextColor="white"
+            autoCapitalize="none"
+            autoCorrect={false}
+            onChange={this.username.bind(this)}
+            value={this.state.username}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.input}
+            placeholder="Endereço de e-mail"
+            keyboardTyle="email-address"
+            placeholderTextColor="white"
+            autoCapitalize="none"
+            autoCorrect={false}
+            onChange={this.email.bind(this)}
+            value={this.state.email}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            placeholderTextColor="white"
+            value={this.state.firstname}
+            onChange={this.firstname.bind(this)}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.input}
+            placeholder="Second Name"
+            placeholderTextColor="white"
+            value={this.state.lastname}
+            onChange={this.lastname.bind(this)}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="white"
+            value={this.state.password}
+            onChange={this.password.bind(this)}
+            autoCapitalize="none"
+            autoCorrect={false}
+            secureTextEntry
+          />
+        </View>
+
+        <Text style={styles.error}>{this.state.error}</Text>
+
+        {this.renderButton()}
         <TouchableHighlight
-          style={styles.signUpLink}
           onPress={this.handleBackToLoginPress}>
           <Text style={styles.signUpLinkText}>Voltar ao login</Text>
         </TouchableHighlight>
-      </View>
+      </View >
     );
   }
 }
@@ -162,23 +251,33 @@ class SignUp extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#003f5c',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2d2d2d',
+  },
+  intro: {
+    alignItems: 'center',
   },
   logo: {
-    height: 30,
+    fontWeight: 'bold',
+    fontFamily: 'sans-serif-thin',
+    fontSize: 20,
+    color: '#fb5b5a',
     marginBottom: 40,
   },
   input: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderRadius: 5,
-    backgroundColor: '#FFF',
-    alignSelf: 'stretch',
-    marginBottom: 15,
-    marginHorizontal: 20,
-    fontSize: 16,
+    height: 50,
+    fontFamily: 'sans-serif-thin',
+    color: 'white'
+  },
+  inputView: {
+    width: '80%',
+    backgroundColor: '#465881',
+    borderRadius: 25,
+    height: 50,
+    marginBottom: 20,
+    justifyContent: 'center',
+    padding: 20,
   },
 
   errorMessage: {
@@ -188,7 +287,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginHorizontal: 20,
   },
-  successMessage : {
+  successMessage: {
     textAlign: 'center',
     color: '#08a092',
     fontSize: 16,
@@ -196,18 +295,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   button: {
-    padding: 20,
-    borderRadius: 5,
-    backgroundColor: '#FC6663',
-    alignSelf: 'stretch',
-    margin: 15,
-    marginHorizontal: 20,
+    width: '80%',
+    backgroundColor: '#fb5b5a',
+    borderRadius: 25,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 40,
+    marginBottom: 10,
   },
   buttonText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-    textAlign: 'center',
+    color: 'white',
+    fontFamily: 'sans-serif-thin',
   },
 
   signUpLink: {
@@ -217,9 +316,23 @@ const styles = StyleSheet.create({
 
   signUpLinkText: {
     color: '#999',
-    fontWeight: 'bold',
+    fontFamily: 'sans-serif',
     fontSize: 16,
     textAlign: 'center',
+  },
+  loginBtn: {
+    width: '80%',
+    backgroundColor: '#fb5b5a',
+    borderRadius: 25,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 40,
+    marginBottom: 10,
+  },
+  loginText: {
+    color: 'white',
+    fontFamily: 'sans-serif-thin',
   },
 });
 

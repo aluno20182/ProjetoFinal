@@ -1,5 +1,7 @@
-import React, {Component} from 'react';
+console.disableYellowBox = true;
+import React, { Component } from 'react';
 import axios from 'axios';
+import url from '../../Url';
 
 import PropTypes from 'prop-types';
 
@@ -35,18 +37,18 @@ class SignIn extends React.Component {
   };
 
   state = {
-    email: 'a@aa.com',
+    email: 'b@bb.com',
     password: 'teste123',
     error: '',
     success: '',
   };
 
   handleEmailChange = email => {
-    this.setState({email});
+    this.setState({ email });
   };
 
   handlePasswordChange = password => {
-    this.setState({password});
+    this.setState({ password });
   };
 
   handleCreateAccountPress = () => {
@@ -56,7 +58,7 @@ class SignIn extends React.Component {
   handleSignInPress = async () => {
 
     //Enviar pedidos
-    await fetch('http://192.168.1.7:3000/users/login', {
+    await fetch(url + '/loginaccount', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -69,14 +71,15 @@ class SignIn extends React.Component {
     }).then(res => res.json())
       .then(res => {
         console.log(res);
+        console.log('chegou')
 
-          AsyncStorage.setItem('token', res.token);
-          this.props.navigation.navigate('Home');
 
-        
+        this.props.navigation.navigate('Home');
+
+
       })
       .catch(err => console.log(err))
-      
+
   };
 
   handleNotLoggedIn = async () => {
@@ -86,47 +89,47 @@ class SignIn extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar hidden />
-        {/*         <Image
-          style={styles.logo}
-          source={require('./amplify.png')}
-          resizeMode="contain"
-        /> */}
-        <TextInput
-          style={styles.input}
-          placeholder="Endereço de e-mail"
-          value={this.state.email}
-          onChangeText={this.handleEmailChange}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Senha"
-          value={this.state.password}
-          onChangeText={this.handlePasswordChange}
-          autoCapitalize="none"
-          autoCorrect={false}
-          secureTextEntry
-        />
-        {this.state.error.length !== 0 && (
-          <Text style={styles.errorMessage}>{this.state.error}</Text>
-        )}
-        <TouchableHighlight
-          style={styles.button}
-          onPress={this.handleSignInPress}>
-          <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableHighlight>
-        <TouchableHighlight
-          style={styles.signUpLink}
-          onPress={this.handleCreateAccountPress}>
-          <Text style={styles.signUpLinkText}>Criar conta grátis</Text>
-        </TouchableHighlight>
-        <TouchableHighlight
-          style={styles.buttonD}
-          onPress={this.handleNotLoggedIn}>
-          <Text style={styles.buttonText}>Sem ligação à Internet?</Text>
-        </TouchableHighlight>
+        <Text style={styles.logo}>Hotspot</Text>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.input}
+            placeholder="Endereço de e-mail"
+            value={this.state.email}
+            onChangeText={this.handleEmailChange}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.input}
+            placeholder="Senha"
+            value={this.state.password}
+            onChangeText={this.handlePasswordChange}
+            autoCapitalize="none"
+            autoCorrect={false}
+            secureTextEntry
+          />
+          {this.state.error.length !== 0 && (
+            <Text style={styles.errorMessage}>{this.state.error}</Text>
+          )}
+        </View>
+        <View style={styles.separator}></View>
+
+          <TouchableHighlight
+            style={styles.button}
+            onPress={this.handleSignInPress}>
+            <Text style={styles.buttonText}>Entrar</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={this.handleCreateAccountPress}>
+            <Text style={styles.signUpLinkText}>Criar conta grátis</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={this.handleNotLoggedIn}>
+            <Text style={styles.buttonText}>Sem ligação à Internet?</Text>
+          </TouchableHighlight>
       </View>
     );
   }
@@ -135,25 +138,31 @@ class SignIn extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#003f5c',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2d2d2d',
   },
   logo: {
-    height: 30,
+    fontFamily: 'sans-serif-thin',
+    fontSize: 50,
+    color: '#fb5b5a',
     marginBottom: 40,
   },
   input: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderRadius: 5,
-    backgroundColor: '#FFF',
-    alignSelf: 'stretch',
-    marginBottom: 15,
-    marginHorizontal: 20,
-    fontSize: 16,
-  },
+    height: 50,
+    color: 'white',
+    fontFamily: 'sans-serif-thin',
 
+  },
+  inputView: {
+    width: '80%',
+    backgroundColor: '#465881',
+    borderRadius: 25,
+    height: 50,
+    marginBottom: 20,
+    justifyContent: 'center',
+    padding: 20,
+  },
   errorMessage: {
     textAlign: 'center',
     color: '#ce2029',
@@ -162,12 +171,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   button: {
-    padding: 20,
-    borderRadius: 5,
-    backgroundColor: '#FC6663',
-    alignSelf: 'stretch',
-    margin: 15,
-    marginHorizontal: 20,
+    width: '80%',
+    backgroundColor: '#fb5b5a',
+    borderRadius: 25,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 40,
+    marginBottom: 10,
   },
   buttonD: {
     padding: 30,
@@ -178,10 +189,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   buttonText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-    textAlign: 'center',
+    color: 'white',
+    fontFamily: 'sans-serif-light',
   },
 
   signUpLink: {
@@ -191,7 +200,7 @@ const styles = StyleSheet.create({
 
   signUpLinkText: {
     color: '#999',
-    fontWeight: 'bold',
+    fontFamily: 'sans-serif',
     fontSize: 16,
     textAlign: 'center',
   },
