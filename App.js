@@ -12,18 +12,19 @@ import EnviarDados from './CODE/Components/EnviarDados';
 import ReceberDados from './CODE/Components/ReceberDados';
 import Peers from './CODE/Components/Peers';
 
-import SignIn from './CODE/Components/SignIn';
+import Login from './CODE/Components/Login';
 import SignUp from './CODE/Components/SignUp';
 
 
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
-import ReduxThunk from 'redux-thunk';
-import reducers from './src/Reducers';
+import thunk from 'redux-thunk';
+
+import Reducers from './CODE/Reducers';
 
 const SwitchNav = createStackNavigator({
-  SignIn: {
-    screen: SignIn,
+  Login: {
+    screen: Login,
     navigationOptions: {
       header: null,
     },
@@ -63,7 +64,7 @@ class App extends React.Component {
     }
   };
   render() {
-    const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
+    const store = createStore(Reducers, {}, applyMiddleware(thunk));
 
     return (
       <Provider store={store}>

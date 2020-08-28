@@ -1,4 +1,4 @@
-#Sun Aug 23 00:15:58 BST 2020
-base.0=C\:\\Users\\ricar\\Documents\\FACULDADE\\ProjetoFinal\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+#Fri Aug 28 08:39:29 BST 2020
+base.0=C\:\\Users\\ricar\\Documentos\\ProjetoFinal\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
 path.0=classes.dex
 renamed.0=classes.dex
