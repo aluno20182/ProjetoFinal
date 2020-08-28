@@ -10,20 +10,15 @@ import {
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import axios from 'axios';
-import url from '../Url';
+import url from '../../Url';
 
-
-import EnivarDados from './EnviarDados';
-import ReceberDados from './ReceberDados';
-
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
 
 class Home extends React.Component {
   static navigationOptions = {
     title: 'Home',
+    headerLeft: null,
     headerStyle: {
-      backgroundColor: '#08a092',
+      backgroundColor: '#3E606F',
     },
     headerTintColor: '#fff',
     headerTitleStyle: {
@@ -41,34 +36,48 @@ class Home extends React.Component {
   }
 
   signOut = async () => {
-    await fetch(url + '/users/me/logout', {
+    const {email} = this.props.navigation.state.params.data;
+    console.log(email);
+
+    await fetch(url + '/logout', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
+        email: email,
       }),
     })
       .then(res => res.json())
       .then(res => {
         console.log(res);
 
-        AsyncStorage.removeItem('token', res.token);
         this.props.navigation.navigate('SignIn');
       })
       .catch(err => console.log(err));
   };
 
-  goToEnviarDados = async () => {
-    try {
-      this.props.navigation.navigate('');
-      console.log('Enviar Dados');
-    } catch (err) {
-      console.log('error signing out...', err);
-    }
+  getPoints = async () => {
+    const {email} = this.props.navigation.state.params.data;
+    console.log(email);
+
+    await fetch(url + '/getpoints', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log('esteee', res);
+        return <Text />;
+      })
+      .catch(err => console.log(err));
   };
 
   async askForUserPermissions() {
@@ -94,10 +103,15 @@ class Home extends React.Component {
 
   render() {
     const {navigate} = this.props.navigation;
+    let nome = this.props.users.firstname;
 
     return (
       <View style={styles.container}>
         <View style={styles.sectionContainer}>
+          {this.getPoints}
+          <View style={styles.intro}>
+                <Text style={styles.statusText}>Olá, {nome}!</Text>
+              </View>
           <TouchableHighlight
             style={styles.button}
             onPress={() => navigate('EnviarDados')}>
@@ -120,7 +134,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#2d2d2d',
   },
   engine: {
     position: 'absolute',

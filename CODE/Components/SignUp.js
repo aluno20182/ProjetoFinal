@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import url from '../../Url';
 
@@ -60,55 +60,45 @@ class SignUp extends Component {
     this.setState({password: text});
   }
 
-
-
   /*handleUsernameChange = name => {
     this.setState({name});
   };*/
 
   handleEmailChange = email => {
-    this.setState({ email });
+    this.setState({email});
   };
 
   handlePasswordChange = password => {
-    this.setState({ password });
+    this.setState({password});
   };
 
   handleFirstNameChange = firstname => {
-    this.setState({ firstname });
+    this.setState({firstname});
   };
   handleLastNameChange = lastname => {
-    this.setState({ lastname });
+    this.setState({lastname});
   };
 
   handleBackToLoginPress = () => {
     this.props.navigation.goBack();
   };
 
-
   signUp() {
     let email = this.state.email;
     let password = this.state.password;
     let first = this.state.first;
     let last = this.state.last;
-    if (
-      email === '' ||
-      password === '' ||
-      first === '' ||
-      last === '' 
-    ) {
+    if (email === '' || password === '' || first === '' || last === '') {
       this.setState({
         error: 'Por favor, preencha todos os campos!',
       });
-    }
-    else {
+    } else {
       console.log('match password');
       this.handleSignUpPress(email, password, first, last);
     }
   }
 
   renderButton() {
-
     return (
       <TouchableHighlight
         style={styles.loginBtn}
@@ -122,12 +112,11 @@ class SignUp extends Component {
   handleSignUpPress = async (email, password, first, last) => {
     if (this.state.email.length === 0 || this.state.password.length === 0) {
       this.setState(
-        { error: 'Preencha todos os campos para continuar!' },
+        {error: 'Preencha todos os campos para continuar!'},
         () => false,
       );
     } else {
       try {
-
         await fetch(url + '/createaccount', {
           method: 'POST',
           headers: {
@@ -141,17 +130,22 @@ class SignUp extends Component {
             firstname: this.state.firstname,
             lastname: this.state.lastname,
           }),
-        }).then((response) => response.json());
+        })
+          .then(res => res.json())
+          .then(res => {
+            console.log(res);
 
-        console.log('ta');
+            this.props.navigation.navigate('SignIn');
+          });
 
+        /* console.log('ta');
 
         this.setState({
           success: 'Conta criada com sucesso! Redirecionando para o login',
           error: '',
         });
 
-        setTimeout(this.goToLogin, 2500);
+        setTimeout(this.goToLogin, 0); */
       } catch (_err) {
         console.log(_err);
         this.setState({
@@ -159,7 +153,7 @@ class SignUp extends Component {
             'Houve um problema com o registo, verifique os dados preenchidos!',
         });
       }
-    } 
+    }
   };
 
   goToLogin = () => {
@@ -178,7 +172,6 @@ class SignUp extends Component {
           <Text style={styles.logo}>Por favor, preencha todos os campos!</Text>
         </View>
         <View style={styles.inputView}>
-
           <TextInput
             style={styles.input}
             placeholder="Nome de utilizador"
@@ -239,11 +232,10 @@ class SignUp extends Component {
         <Text style={styles.error}>{this.state.error}</Text>
 
         {this.renderButton()}
-        <TouchableHighlight
-          onPress={this.handleBackToLoginPress}>
+        <TouchableHighlight onPress={this.handleBackToLoginPress}>
           <Text style={styles.signUpLinkText}>Voltar ao login</Text>
         </TouchableHighlight>
-      </View >
+      </View>
     );
   }
 }
@@ -268,7 +260,7 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     fontFamily: 'sans-serif-thin',
-    color: 'white'
+    color: 'white',
   },
   inputView: {
     width: '80%',

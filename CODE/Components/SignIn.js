@@ -1,5 +1,5 @@
 console.disableYellowBox = true;
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
 import url from '../../Url';
 
@@ -24,7 +24,7 @@ import {
   AsyncStorage,
 } from 'react-native';
 
-class SignIn extends React.Component {
+export class SignIn extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -44,11 +44,11 @@ class SignIn extends React.Component {
   };
 
   handleEmailChange = email => {
-    this.setState({ email });
+    this.setState({email});
   };
 
   handlePasswordChange = password => {
-    this.setState({ password });
+    this.setState({password});
   };
 
   handleCreateAccountPress = () => {
@@ -56,30 +56,31 @@ class SignIn extends React.Component {
   };
 
   handleSignInPress = async () => {
-
     //Enviar pedidos
     await fetch(url + '/loginaccount', {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         email: this.state.email,
         password: this.state.password,
       }),
-    }).then(res => res.json())
+    })
+      .then(res => res.json())
       .then(res => {
         console.log(res);
-        console.log('chegou')
+        console.log('chegou');
 
-
-        this.props.navigation.navigate('Home');
-
-
+        console.log('aqui esta o email', this.state.email)
+        this.props.navigation.navigate('Home', {
+          data: {
+            email: this.state.email,
+          },
+        });
       })
-      .catch(err => console.log(err))
-
+      .catch(err => console.log(err));
   };
 
   handleNotLoggedIn = async () => {
@@ -114,22 +115,21 @@ class SignIn extends React.Component {
             <Text style={styles.errorMessage}>{this.state.error}</Text>
           )}
         </View>
-        <View style={styles.separator}></View>
+        <View style={styles.separator} />
 
-          <TouchableHighlight
-            style={styles.button}
-            onPress={this.handleSignInPress}>
-            <Text style={styles.buttonText}>Entrar</Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={this.handleCreateAccountPress}>
-            <Text style={styles.signUpLinkText}>Criar conta grátis</Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.button}
-            onPress={this.handleNotLoggedIn}>
-            <Text style={styles.buttonText}>Sem ligação à Internet?</Text>
-          </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.button}
+          onPress={this.handleSignInPress}>
+          <Text style={styles.buttonText}>Entrar</Text>
+        </TouchableHighlight>
+        <TouchableHighlight onPress={this.handleCreateAccountPress}>
+          <Text style={styles.signUpLinkText}>Criar conta grátis</Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.button}
+          onPress={this.handleNotLoggedIn}>
+          <Text style={styles.buttonText}>Sem ligação à Internet?</Text>
+        </TouchableHighlight>
       </View>
     );
   }
@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
     height: 50,
     color: 'white',
     fontFamily: 'sans-serif-thin',
-
   },
   inputView: {
     width: '80%',

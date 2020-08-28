@@ -7,14 +7,19 @@ import {
 import {createStackNavigator} from 'react-navigation-stack';
 import React from 'react';
 
-import Home from './Navigation/Home';
-import EnviarDados from './Navigation/EnviarDados';
-import ReceberDados from './Navigation/ReceberDados';
-import Peers from './Navigation/Peers';
+import Home from './CODE/Components/Home';
+import EnviarDados from './CODE/Components/EnviarDados';
+import ReceberDados from './CODE/Components/ReceberDados';
+import Peers from './CODE/Components/Peers';
 
-import SignIn from './Navigation/Auth/SignIn';
-import SignUp from './Navigation/Auth/SignUp';
+import SignIn from './CODE/Components/SignIn';
+import SignUp from './CODE/Components/SignUp';
 
+
+import {Provider} from 'react-redux';
+import {createStore, applyMiddleware} from 'redux';
+import ReduxThunk from 'redux-thunk';
+import reducers from './src/Reducers';
 
 const SwitchNav = createStackNavigator({
   SignIn: {
@@ -28,10 +33,9 @@ const SwitchNav = createStackNavigator({
     navigationOptions: {
       header: null,
     },
-  }, 
+  },
   Home: {
     screen: Home,
-
   },
   EnviarDados: {
     screen: EnviarDados,
@@ -47,12 +51,10 @@ const SwitchNav = createStackNavigator({
 const Nav = createAppContainer(SwitchNav);
 
 class App extends React.Component {
-
   constructor(props) {
-    super(props)
-
+    super(props);
   }
-  
+
   checkAuth = async () => {
     try {
       await AmplifyAuth.currentAuthenticatedUser();
@@ -61,11 +63,15 @@ class App extends React.Component {
     }
   };
   render() {
+    const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
+
     return (
-      <Nav
-        ref={nav => (this.navigator = nav)}
-        onNavigationStateChange={this.checkAuth}
-      />
+      <Provider store={store}>
+        <Nav
+          ref={nav => (this.navigator = nav)}
+          onNavigationStateChange={this.checkAuth}
+        />
+      </Provider>
     );
   }
 }
