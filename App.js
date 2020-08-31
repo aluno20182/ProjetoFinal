@@ -15,7 +15,6 @@ import Peers from './CODE/Components/Peers';
 import Login from './CODE/Components/Login';
 import SignUp from './CODE/Components/SignUp';
 
-
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
@@ -52,17 +51,15 @@ const SwitchNav = createStackNavigator({
 const Nav = createAppContainer(SwitchNav);
 
 class App extends React.Component {
+  componentDidMount() {
+    navigatorRef = this.navigator;
+  }
+
   constructor(props) {
     super(props);
   }
 
-  checkAuth = async () => {
-    try {
-      await AmplifyAuth.currentAuthenticatedUser();
-    } catch (err) {
-      this.navigator.dispatch(NavigationActions.navigate({routeName: 'Auth'}));
-    }
-  };
+
   render() {
     const store = createStore(Reducers, {}, applyMiddleware(thunk));
 

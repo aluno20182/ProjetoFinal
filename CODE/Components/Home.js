@@ -1,4 +1,7 @@
 import React from 'react';
+import {connect} from 'react-redux';
+import {signOut, getPoints} from '../Actions/HomeActions';
+
 import {
   StyleSheet,
   ScrollView,
@@ -9,9 +12,6 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import axios from 'axios';
-import url from '../../Url';
-
 
 class Home extends React.Component {
   static navigationOptions = {
@@ -35,49 +35,8 @@ class Home extends React.Component {
     this.askForUserPermissions();
   }
 
-  signOut = async () => {
-    const {email} = this.props.navigation.state.params.data;
-    console.log(email);
-
-    await fetch(url + '/logout', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-      }),
-    })
-      .then(res => res.json())
-      .then(res => {
-        console.log(res);
-
-        this.props.navigation.navigate('SignIn');
-      })
-      .catch(err => console.log(err));
-  };
-
-  getPoints = async () => {
-    const {email} = this.props.navigation.state.params.data;
-    console.log(email);
-
-    await fetch(url + '/getpoints', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-      }),
-    })
-      .then(res => res.json())
-      .then(res => {
-        console.log('esteee', res);
-        return <Text />;
-      })
-      .catch(err => console.log(err));
+  handleSignOutPress = () => {
+    this.props.signOut(this.props.email);
   };
 
   async askForUserPermissions() {
@@ -103,15 +62,16 @@ class Home extends React.Component {
 
   render() {
     const {navigate} = this.props.navigation;
-    let nome = this.props.users.firstname;
+    let nome = this.props.user.firstname;
+    console.log(nome, 'nome');
 
     return (
       <View style={styles.container}>
         <View style={styles.sectionContainer}>
           {this.getPoints}
           <View style={styles.intro}>
-                <Text style={styles.statusText}>Olá, {nome}!</Text>
-              </View>
+            <Text style={styles.statusText}>Olá, {/* {nome} */}!</Text>
+          </View>
           <TouchableHighlight
             style={styles.button}
             onPress={() => navigate('EnviarDados')}>
@@ -174,7 +134,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   buttonText: {
-    color: '#FFF',
+    color: '#000',
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center',
@@ -188,4 +148,14 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
-export default Home;
+
+const mapStateToProps = state => {
+  return {
+    user: state.log.user,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {signOut, getPoints},
+)(Home);

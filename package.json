@@ -26,6 +26,7 @@
     "react-native-hotspot": "0.0.6",
     "react-native-modals": "^0.19.9",
     "react-native-paper": "^3.6.0",
+    "react-native-router-flux": "^4.2.0",
     "react-native-screens": "2.0.0-alpha.8",
     "react-native-wifi-and-hotspot-wizard": "^1.0.5-stable",
     "react-native-wifi-hotspot": "git://github.com/assemmohamedali/react-native-wifi-hotspot.git",

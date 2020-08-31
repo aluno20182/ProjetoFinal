@@ -1,7 +1,7 @@
 console.disableYellowBox = true;
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { loginUpdate, loginUser } from '../Actions/LoginActions';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {loginUpdate, loginUser} from '../Actions/LoginActions';
 import PropTypes from 'prop-types';
 
 import {
@@ -28,7 +28,6 @@ export class Login extends React.Component {
     }).isRequired,
   };
 
-
   handleCreateAccountPress = () => {
     this.props.navigation.navigate('SignUp');
   };
@@ -39,6 +38,7 @@ export class Login extends React.Component {
 
   handleSignInPress = () => {
     this.props.loginUser(this.props.email, this.props.password);
+    this.props.navigation.navigate('Home');
   };
 
   render() {
@@ -69,7 +69,7 @@ export class Login extends React.Component {
             autoCorrect={false}
             secureTextEntry
           />
-{/*           {this.state.error.length !== 0 && (
+          {/*           {this.state.error.length !== 0 && (
             <Text style={styles.errorMessage}>{this.state.error}</Text>
           )} */}
         </View>
@@ -163,13 +163,13 @@ const styles = StyleSheet.create({
   },
 });
 
-
 const mapStateToProps = state => {
   return {
     email: state.log.email,
-    password: state.log.password,
-  };
+    password: state.log.password,  };
 };
 
-export default connect(mapStateToProps, {loginUpdate, loginUser})(Login);
-
+export default connect(
+  mapStateToProps,
+  {loginUpdate, loginUser},
+)(Login);
