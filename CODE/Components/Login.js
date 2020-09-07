@@ -1,4 +1,3 @@
-console.disableYellowBox = true;
 import React, { Component, useState, useContext } from 'react';
 import {LoginApi} from '../../index.js';
 //import { loginUpdate, loginUser } from '../Actions/LoginActions';
@@ -13,7 +12,7 @@ import {
 import { useDispatch } from 'react-redux';
 
 export default function Login({navigation}) {
-  
+
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
