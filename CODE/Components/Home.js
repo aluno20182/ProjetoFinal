@@ -8,7 +8,6 @@ import {
   Button,
   View,
   Text,
-  PermissionsAndroid,
   TouchableHighlight,
 } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -34,14 +33,13 @@ const navigationOptions = {
   },
 };
 
-export default function Home (){
+export default function Home ({navigation}){
 
   const teste = useSelector(state => state.UserReducer.user);
 
 
   //[] = corre só 1 vez
   useEffect(() => {
-    askForUserPermissions();
     console.log('useasdsgfdsfdasr', teste.username);
 
   }, []);
@@ -59,26 +57,6 @@ export default function Home (){
   
   
 
-  async function askForUserPermissions() {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Wifi networks',
-          message: 'We need your permission in order to find wifi networks',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Thank you for your permission! :)');
-      } else {
-        console.log(
-          'You will not able to retrieve wifi available networks list',
-        );
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  }
 
     //const { navigate } = this.props.navigation;
     //let username = this.props.user.username;
@@ -97,7 +75,7 @@ export default function Home (){
     return (
       <View style={styles.container}>
         <View style={styles.sectionContainer}>
-          {this.getPoints}
+         
           <View style={styles.intro}>
             <Text style={styles.statusText}>Olá,  !</Text>
 
