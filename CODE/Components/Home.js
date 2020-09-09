@@ -77,7 +77,7 @@ export default function Home ({navigation}){
         <View style={styles.sectionContainer}>
          
           <View style={styles.intro}>
-            <Text style={styles.statusText}>Olá,  !</Text>
+            <Text style={styles.statusText}>Olá, {teste.username} !</Text>
 
           </View>
           <TouchableHighlight

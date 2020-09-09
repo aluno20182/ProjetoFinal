@@ -4,6 +4,7 @@ import Home from './Home';
 import EnviarDados from './EnviarDados';
 import ReceberDados from './ReceberDados';
 import Peers from './Peers';
+import Bluetooth from './Bluetooth'
 
 
 
@@ -13,8 +14,8 @@ const Stack = createStackNavigator();
 export default class Tab extends React.Component {
   render() {
     return (
-      <Stack.Navigator screenOptions={{
-        headerShown: false
+      <Stack.Navigator initialRouteName="Home" screenOptions={{
+        headerShown: false 
       }}>
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="EnviarDados" component={EnviarDados} />
@@ -29,6 +30,8 @@ export default class Tab extends React.Component {
             fontWeight: 'bold',
           },
         }} />
+        <Stack.Screen name="Bluetooth" component={Bluetooth} />
+
         <Stack.Screen name="Peers" component={Peers} />
       </Stack.Navigator>
     );

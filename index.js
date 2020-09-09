@@ -2,7 +2,6 @@
  * @format
  */
 import 'react-native-gesture-handler';
-import MaskedView from '@react-native-community/masked-view';
 
 import React, { Component, useEffect } from 'react';
 import { AppRegistry, AsyncStorage } from 'react-native';

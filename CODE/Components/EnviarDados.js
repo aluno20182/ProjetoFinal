@@ -16,6 +16,9 @@ import { HotspotWizard } from 'react-native-wifi-and-hotspot-wizard';
 
 
 
+
+
+
 export default function EnviarDados({navigation}) {
   const navigationOptions = {
     title: 'Enviar Dados',
