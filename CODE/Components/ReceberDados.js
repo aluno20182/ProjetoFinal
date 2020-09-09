@@ -13,7 +13,11 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  NativeModules,
+  DeviceEventEmitter,
+  NativeEventEmitter
 } from 'react-native';
+
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
@@ -23,16 +27,15 @@ import AndroidOpenSettings from 'react-native-android-open-settings';
 import Modal, { ModalContent } from 'react-native-modals';
 import { Card, Divider } from 'react-native-elements';
 
-import {WifiWizard, HotspotWizard} from 'react-native-wifi-and-hotspot-wizard';
-import WifiManager from "react-native-wifi-reborn";
+import { WifiWizard, HotspotWizard } from 'react-native-wifi-and-hotspot-wizard';
+
+
+
 
 
 export default function ReceberDados({ navigation }) {
 
-
-
   const [ssid, SetSsid] = useState(null);
-  const [list, setList] = useState(null);
   const [pass, setPass] = useState(null);
   const [ssidExist, setSsidExist] = useState(null);
   //currentSSID: null,
@@ -47,6 +50,7 @@ export default function ReceberDados({ navigation }) {
 
   useEffect(() => {
     verStatus();
+
   }, [status]);
 
 
@@ -83,88 +87,76 @@ export default function ReceberDados({ navigation }) {
     console.log('wifi ligado? ' + enable);
   };
 
-  function turnOffWifi(){
-    WifiWizard.turnOffWifi().then(()=>{
+  function turnOffWifi() {
+    WifiWizard.turnOffWifi().then(() => {
       console.log('WiFi is now INACTIVE')
     });
   }
 
   async function connectOnPress() {
-    console.log( pass );
+    console.log(pass);
 
-/*     wifi.findAndConnect(ssid, pass, (found) => {
-      console.log(ssid, 'ssid');
-      console.log(pass, 'pass');
-      console.log(found, 'found');
+    /*     wifi.findAndConnect(ssid, pass, (found) => {
+          console.log(ssid, 'ssid');
+          console.log(pass, 'pass');
+          console.log(found, 'found');
+    
+          if (found) {
+            console.log("wifi is in range");
+            setSsid(ssid);
+    
+          } else {
+            console.log("wifi is not in range");
+          }
+        });  */
 
-      if (found) {
-        console.log("wifi is in range");
-        setSsid(ssid);
-
-      } else {
-        console.log("wifi is not in range");
-      }
-    });  */
 
 
+    /* 
+        try {
+          const data = await WifiManager.connectToProtectedSSID(
+            ssid,
+            pass,
+            false,
+          );
+          console.log('Connected successfully!', {data});
+          SetSsid(ssid);
+        } catch (error) {
+          console.log('Connection failed!', {error});
+        }  */
 
-/* 
-    try {
-      const data = await WifiManager.connectToProtectedSSID(
-        ssid,
-        pass,
-        false,
-      );
-      console.log('Connected successfully!', {data});
-      SetSsid(ssid);
-    } catch (error) {
-      console.log('Connection failed!', {error});
-    }  */
-
-    let network = wifiList.filter((Network)=>{
-      console.log('ssssssssssss',ssid)
-      return Network.SSID=="NOS-8E40";
+    let network = wifiList.filter((Network) => {
+      console.log('ssssssssssss', ssid)
+      return Network.SSID == "NOS-8E40";
     })
     console.log(network[0])
 
     WifiWizard.connectToNetwork(network[0], "NOS-8E40", "7ea33eeec632")
-    .then((data)=>{
-      console.log('sextou', data)
-      if(data.status=="connected"){
-        // Further Tasks
-        console.log("wifi is in range");
-        setSsidExist(ssid);
-      }
-      }).catch(err => console.log(err)) 
- 
+      .then((data) => {
+        console.log('sextou', data)
+        if (data.status == "connected") {
+          // Further Tasks
+          console.log("wifi is in range");
+          setSsidExist(ssid);
+        }
+      }).catch(err => console.log(err))
+
   }
 
 
-
-  // function mudaEstado() {
-  //   setTimeout(this.verStatus(), 5000);
-  //   //this.verSSID();
-  // };
-
   function verSSID() {
 
-      wifi.getSSID((res) => {
-        SetSsid(res);
-        console.log(res);
-      });
-      //ligar wifi
-    
+    wifi.getSSID((res) => {
+      SetSsid(res);
+      console.log(res);
+    });
+    //ligar wifi
+
 
 
   };
 
-  //dá o estado da ligação
-  /*   connectionStatusOnPress = () => {
-    wifi.connectionStatus(isConnected => {
-      this.setState({status: isConnected});
-      console.log(this.state.status);
-    });
-  }; */
+
 
 
   //get the current network connection IP
@@ -261,100 +253,105 @@ export default function ReceberDados({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View >
-        <Card
-          containerStyle={{ borderRadius: 10, marginTop: 50 }}>
-          <Card.Title style={{ fontFamily: 'sans-serif-light', fontSize: 30 }}>Wifi</Card.Title>
-          <View style={styles.CardView}>
-            <Text style={styles.CardText} /*onLayout={this.verStatus}*/>Status</Text>
-            <Text style={styles.CardSubText}>{enable} </Text>
-          </View>
-          <Divider style={{ backgroundColor: 'black' }} />
-          <View style={styles.CardView}>
-            <Text style={styles.CardText}/*onLayout={verStatus}*/>SSID:</Text>
-            <Text style={styles.CardSubText} /* onChangeText={event => { setSsid(event) }} */>{ssid}</Text>
-          </View>
-        </Card>
-      </View>
-      <View style={styles.conjButton}>
-        <TouchableHighlight
-          style={styles.button}
-          onPress={()=>{togglerWifi()}}>
-          <Text style={styles.ButtonText}>Ligar/Desligar Wifi</Text>
-        </TouchableHighlight>
-
-        <TouchableHighlight
-          style={styles.button}
-          title="Procurar Wifi"
-          onPress={getWifiNetworksOnPress}>
-          <Text style={styles.ButtonText}>Redes WIFI Disponiveis</Text>
-        </TouchableHighlight>
-
-        <TouchableHighlight style={styles.button} onPress={verSSID}>
-          <Text style={styles.ButtonText}>Ver SSID</Text>
-        </TouchableHighlight>
-
-        <TouchableHighlight style={styles.button} onPress={verIP}>
-          <Text style={styles.ButtonText}>Ver IP</Text>
-        </TouchableHighlight>
-      </View>
-      <Modal
-        visible={modalVisible}
-        presentationStyle={['pageSheet ']}
-        swipeDirection={['up', 'down']} // can be string or an array
-        swipeThreshold={100} // default 100
-        onSwipeOut={event => {
-          setModalVisible(false);
-        }}
-        onBackButtonPress={() => {
-          setModalVisible(false);
-        }}
-        onTouchOutside={() => {
-          setModalVisible(false);
-        }}>
-        <ModalContent style={styles.modal}>
-          <ScrollView>
-            <Text>{'\n'}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setModalVisible(false);
-              }}>
-              <Text>Exit</Text>
-            </TouchableOpacity>
-            <Text style={styles.textHighlightS}>SSID</Text>
-            <TextInput
-              style={styles.input}
-              underlineColorAndroid="transparent"
-              onChangeText={event => { SetSsid(event) }}
-              value={ssid}
-              placeholder={'ssid'}
-            />
-            <Text style={styles.textHighlightS}>Password</Text>
-            <TextInput
-              style={styles.input}
-              secureTextEntry={true}
-              underlineColorAndroid="transparent"
-              onChangeText={event => { setPass(event) }}
-              value={pass}
-              placeholder={'password'}
-            />
-            <View>
-              <Button
-                title="Conectar"
-                onPress={connectOnPress}
-              />
-              <Text style={styles.answer}>
-                {ssidExist == null
-                  ? ''
-                  : ssidExist
-                    ? 'Network in range :)'
-                    : 'Network out of range :('}
-              </Text>
+      <ScrollView>
+        <View >
+          <Card
+            containerStyle={{ borderRadius: 10, marginTop: 50 }}>
+            <Card.Title style={{ fontFamily: 'sans-serif-light', fontSize: 30 }}>Wifi</Card.Title>
+            <View style={styles.CardView}>
+              <Text style={styles.CardText} /*onLayout={this.verStatus}*/>Status</Text>
+              <Text style={styles.CardSubText}>{enable} </Text>
             </View>
-            {renderModal()}
-          </ScrollView>
-        </ModalContent>
-      </Modal>
+            <Divider style={{ backgroundColor: 'black' }} />
+            <View style={styles.CardView}>
+              <Text style={styles.CardText}/*onLayout={verStatus}*/>SSID:</Text>
+              <Text style={styles.CardSubText} /* onChangeText={event => { setSsid(event) }} */>{ssid}</Text>
+            </View>
+          </Card>
+        </View>
+        <View style={styles.conjButton}>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={() => { togglerWifi() }}>
+            <Text style={styles.ButtonText}>Ligar/Desligar Wifi</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight
+            style={styles.button}
+            title="Procurar Wifi"
+            onPress={getWifiNetworksOnPress}>
+            <Text style={styles.ButtonText}>Redes WIFI Disponiveis</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight style={styles.button} onPress={verSSID}>
+            <Text style={styles.ButtonText}>Ver SSID</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight style={styles.button} onPress={verIP}>
+            <Text style={styles.ButtonText}>Ver IP</Text>
+          </TouchableHighlight>
+          <TouchableHighlight style={styles.button} onPress={() => navigation.navigate('Bluetooth')}>
+            <Text style={styles.ButtonText}>Ver Devices</Text>
+          </TouchableHighlight>
+        </View>
+        <Modal
+          visible={modalVisible}
+          presentationStyle={['pageSheet ']}
+          swipeDirection={['up', 'down']} // can be string or an array
+          swipeThreshold={100} // default 100
+          onSwipeOut={event => {
+            setModalVisible(false);
+          }}
+          onBackButtonPress={() => {
+            setModalVisible(false);
+          }}
+          onTouchOutside={() => {
+            setModalVisible(false);
+          }}>
+          <ModalContent style={styles.modal}>
+            <ScrollView>
+              <Text>{'\n'}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(false);
+                }}>
+                <Text>Exit</Text>
+              </TouchableOpacity>
+              <Text style={styles.textHighlightS}>SSID</Text>
+              <TextInput
+                style={styles.input}
+                underlineColorAndroid="transparent"
+                onChangeText={event => { SetSsid(event) }}
+                value={ssid}
+                placeholder={'ssid'}
+              />
+              <Text style={styles.textHighlightS}>Password</Text>
+              <TextInput
+                style={styles.input}
+                secureTextEntry={true}
+                underlineColorAndroid="transparent"
+                onChangeText={event => { setPass(event) }}
+                value={pass}
+                placeholder={'password'}
+              />
+              <View>
+                <Button
+                  title="Conectar"
+                  onPress={connectOnPress}
+                />
+                <Text style={styles.answer}>
+                  {ssidExist == null
+                    ? ''
+                    : ssidExist
+                      ? 'Network in range :)'
+                      : 'Network out of range :('}
+                </Text>
+              </View>
+              {renderModal()}
+            </ScrollView>
+          </ModalContent>
+        </Modal>
+      </ScrollView>
     </SafeAreaView>
   );
 }
