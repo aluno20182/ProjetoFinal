@@ -1,6 +1,11 @@
-import React, { Component, useState, useContext } from 'react';
+import React, {Component, useState, useContext} from 'react';
+import {AsyncStorage} from 'react-native';
+
+AsyncStorage;
 import {LoginApi} from '../../index.js';
 //import { loginUpdate, loginUser } from '../Actions/LoginActions';
+
+import url from '../../Url';
 
 import {
   StyleSheet,
@@ -9,61 +14,55 @@ import {
   TextInput,
   TouchableHighlight,
 } from 'react-native';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 export default function Login({navigation}) {
-
-
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState('b@bb.com');
+  const [password, setPassword] = useState('teste123');
 
   const api = useContext(LoginApi);
   const dispatch = useDispatch();
 
-
-  function setUser(user){
-    dispatch({type:'SET_USER', user: user})
+  function setUser(user) {
+    dispatch({type: 'SET_USER', user: user});
   }
-
 
   const navigationOptions = {
     header: null,
   };
 
-
-  function changeRegister(){
+  function changeRegister() {
     navigation.navigate('SignUp');
   }
 
-  function handleNotLoggedIn(){
+  function handleNotLoggedIn() {
     navigation.navigate('ReceberDados');
-  };
+  }
 
-  // async function login(){
-  //   let login = {email: email,
-  //     password: password};
-  //   await fetch(`https://strate-backend.herokuapp.com/login`, {
-  //     method: "POST",
-  //     headers: {'Content-Type':'application/json'
-  //     },
-  //     body: JSON.stringify(login)
-  //   }).then((response) => {        
-  //     console.log(response.body);
-  //     //guardar username e token no AsyncStorage
-  //     //AsyncStorage.setItem(token, response.token);
-  //     //passar para a app
-  //     if(response.status==200){  
-  //       api.onLoginPress();
-  //     }
-  //   }).catch((error) => {
-  //     console.error(error);
-  //   });
-  // }
+  async function login() {
+    let login = {email: email, password: password};
+    await fetch(url + '/loginaccount', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(login),
+    })
+      .then((response) => {
+        console.log(response.body);
+        //guardar username e token no AsyncStorage
+        AsyncStorage.setItem('token', response.token);
+        //passar para a app
+        if (response.status == 200) {
+          api.onLoginPress();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
-    function login(){
-      api.onLoginPress();
-    }
-
+  function loginSemAuth() {
+    api.onLoginPress();
+  }
 
   return (
     <View style={styles.container}>
@@ -73,9 +72,7 @@ export default function Login({navigation}) {
           style={styles.input}
           placeholder="Endereço de e-mail"
           value={email}
-/*             onChangeText={value =>
-            this.props.loginUpdate({ prop: 'email', value: value })
-          } */
+          onChangeText={(value) => setEmail(value)}
           autoCapitalize="none"
           autoCorrect={false}
         />
@@ -85,9 +82,7 @@ export default function Login({navigation}) {
           style={styles.input}
           placeholder="Senha"
           value={password}
-/*             onChangeText={value =>
-            this.props.loginUpdate({ prop: 'password', value: value })
-          } */
+          onChangeText={(value) => setPassword(value)}
           autoCapitalize="none"
           autoCorrect={false}
           secureTextEntry
@@ -98,22 +93,17 @@ export default function Login({navigation}) {
       </View>
       <View style={styles.separator} />
 
-      <TouchableHighlight
-        style={styles.button}
-        onPress={login}>
+      <TouchableHighlight style={styles.button} onPress={loginSemAuth}>
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableHighlight>
       <TouchableHighlight onPress={changeRegister}>
         <Text style={styles.signUpLinkText}>Criar conta grátis</Text>
       </TouchableHighlight>
-      <TouchableHighlight
-        style={styles.button}
-        onPress={handleNotLoggedIn}>
+      <TouchableHighlight style={styles.button} onPress={handleNotLoggedIn}>
         <Text style={styles.buttonText}>Sem ligação à Internet?</Text>
       </TouchableHighlight>
     </View>
   );
-
 }
 
 const styles = StyleSheet.create({
@@ -160,14 +150,6 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 10,
   },
-  buttonD: {
-    padding: 30,
-    borderRadius: 5,
-    backgroundColor: '#08a092',
-    alignSelf: 'stretch',
-    margin: 15,
-    marginHorizontal: 20,
-  },
   buttonText: {
     color: 'white',
     fontFamily: 'sans-serif-light',
@@ -185,4 +167,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
