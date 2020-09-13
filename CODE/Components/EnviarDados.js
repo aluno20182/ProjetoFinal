@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+
 import {
   Platform,
   Text,
@@ -8,16 +9,18 @@ import {
   ListView,
   StyleSheet,
   ScrollView,
+  TextInput,
   TouchableHighlight,
+  TouchableOpacity,
+  Clipboard
 } from 'react-native';
 //Third party
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { HotspotWizard } from 'react-native-wifi-and-hotspot-wizard';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {HotspotWizard} from 'react-native-wifi-and-hotspot-wizard';
 
+import AndroidOpenSettings from 'react-native-android-open-settings';
 
-
-
-
+import wifi from 'react-native-android-wifi';
 
 export default function EnviarDados({navigation}) {
   const navigationOptions = {
@@ -31,49 +34,48 @@ export default function EnviarDados({navigation}) {
     },
   };
 
-
-
+  const [wifiList, setWifiList] = useState(null);
+  const [ssid, setSSID] = useState();
+  const [password, setPassword] = useState();
 
   //HotsPot enable function
-  function doEnable(){
+  /* function doEnable() {
     // console.warn("do Enable called");
-    HotspotWizard.turnOnHotspot("", "").then(data => {
-      console.log(data)
-      let status = data.status;
-      if (status == "success") {
-        // Hotspot Enabled Successfully with custom credentials.
-        console.log('Criado com SSID: John Doe Network & Pass: helloworld')
-      }
-      else if (status == "auth") {
-        // Hotspot Enabled Successfully with random credentials.
-        console.log('o tal ssid', data.SSID);
-        console.log(data.status);
-      }
-    }).catch(err => console.log(err))
-    /* Hotspot.enable(
+    HotspotWizard.turnOnHotspot('', '')
+      .then((data) => {
+        console.log(data);
+        let status = data.status;
+        if (status == 'success') {
+          // Hotspot Enabled Successfully with custom credentials.
+          console.log('Criado com SSID: John Doe Network & Pass: helloworld');
+        } else if (status == 'auth') {
+          // Hotspot Enabled Successfully with random credentials.
+          console.log('o tal ssid', data.SSID);
+          console.log(data.status);
+        }
+      })
+      .catch((err) => console.log(err)); */
+  /* Hotspot.enable(
       () => {
         ToastAndroid.show('Hotspot Enabled', ToastAndroid.SHORT);
       },
       err => {
         ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
       },
-    );*/
-  };
+    );
+  }*/
   //Disable HotsPot
-  function doDisable(){
-    HotspotWizard.turnOffHotspot().then(data => {
+  /*   function doDisable() {
+    HotspotWizard.turnOffHotspot().then((data) => {
       let status = data.status;
-      if (status == "success") {
+      if (status == 'success') {
         // Hotspot Disabled Successfully
         console.log('Disabled');
-
-      }
-      else {
+      } else {
         // Failed to disabled Hotspot.
         console.log('error');
-
       }
-    })
+    });
     /* Hotspot.disable(
       () => {
         ToastAndroid.show('Hotspot Disabled', ToastAndroid.SHORT);
@@ -81,9 +83,8 @@ export default function EnviarDados({navigation}) {
       err => {
         ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
       },
-    ); */
-  };
-
+    ); 
+  } */
 
   // //go to create screen
   // goToCreate = () => {
@@ -116,76 +117,116 @@ export default function EnviarDados({navigation}) {
   // };
 
   //go to the peers screen
-/*   goToPeers = () => {
+  /*   goToPeers = () => {
     this.props.navigation.navigate('Peers');
   }; */
+
+  function goToSet() {
+    // Open date settings menu
+    AndroidOpenSettings.wirelessSettings();
+  }
+
+  function getWifiNetworksOnPress() {
+    wifi.loadWifiList(
+      (wifiStringList) => {
+        var wifiArray = JSON.parse(wifiStringList);
+        setWifiList(wifiArray);
+        console.log({wifiArray});
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
+  }
+
+  const copyToClipboard = () => {
+    Clipboard.getString()
+    ToastAndroid.show('SSID Copiado: ' + ssid, ToastAndroid.SHORT);
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.sectionContainer}>
-        <TouchableHighlight style={styles.button} onPress={() => {doEnable()}}>
-          <Text style={styles.buttonText}>
-            Desliga o Wifi, Liga dados Moveis e ativa o Hotspot
-            </Text>
-        </TouchableHighlight>
+      <View style={styles.inputView}>
+        <TextInput
+          style={styles.input}
+          placeholder="SSID"
+          value={ssid}
+          onChangeText={(value) => setSSID(value)}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+      </View>
+      <TouchableOpacity onPress={() => copyToClipboard(ssid)}>
+          <Text>Copy</Text>
+        </TouchableOpacity>
+      <View style={styles.inputView}>
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          value={Clipboard.setString(ssid)}
+          onChangeText={(value) => setPassword(value)}
+          autoCapitalize="none"
+          autoCorrect={false}
+          secureTextEntry
+        />
+        {/*           {this.state.error.length !== 0 && (
+          <Text style={styles.errorMessage}>{this.state.error}</Text>
+        )} */}
+      </View>
+      <TouchableHighlight
+        style={styles.button}
+        onPress={() => {
+          goToSet();
+        }}>
+        <Text style={styles.buttonText}>Configurar o HotsPot</Text>
+      </TouchableHighlight>
 
-        <TouchableHighlight style={styles.button} onPress={() => {doDisable()}}>
-          <Text style={styles.buttonText}>
-            Desativa e verifica se já está fechado
-            </Text>
-        </TouchableHighlight>
+      <TouchableHighlight
+        style={styles.button}
+        >
+        <Text style={styles.buttonText}>
+          Enviar as credenciais
+        </Text>
+      </TouchableHighlight>
+{/*
+      <TouchableHighlight
+        style={styles.button}
+        onPress={() => {
+          goToCreate();
+        }}>
+        <Text style={styles.buttonText}> Configura as opções do HotsPot</Text>
+      </TouchableHighlight> */}
 
-        <TouchableHighlight style={styles.button} onPress={() => {goToCreate()}}>
-          <Text style={styles.buttonText}>
-            {' '}
-              Configura as opções do HotsPot
-            </Text>
-        </TouchableHighlight>
-
-{/*         <TouchableHighlight style={styles.button} onPress={this.doFetch}>
+      {/*         <TouchableHighlight style={styles.button} onPress={this.doFetch}>
           <Text style={styles.buttonText}> Fetch das opções de HotsPot</Text>
         </TouchableHighlight> */}
-{/* 
+      {/* 
         <TouchableHighlight style={styles.button} onPress={this.goToPeers}>
           <Text style={styles.buttonText}> Mostra todos os Peers</Text>
         </TouchableHighlight> */}
-      </View>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#2d2d2d',
+    justifyContent: 'center',
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  inputView: {
+    width: '60%',
+    backgroundColor: '#465881',
+    borderRadius: 25,
+    height: 50,
+    marginBottom: 20,
+    justifyContent: 'center',
+    flexDirection: 'row'
   },
-  instructionsContainer: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
+  input: {
+    height: 50,
+    color: 'white',
+    fontFamily: 'sans-serif-thin',
   },
   highlight: {
     fontWeight: '700',
@@ -204,13 +245,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
 });
-

@@ -1,7 +1,11 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, {useEffect, useContext, useState} from 'react';
+import {useSelector} from 'react-redux';
 //import { signOut, getPoints } from '../Actions/HomeActions';
-
+import {LoginApi} from '../../index.js';
+import RNBluetoothClassic, {
+  BTEvents,
+  BTCharsets,
+} from 'react-native-bluetooth-classic';
 import {
   StyleSheet,
   ScrollView,
@@ -9,11 +13,13 @@ import {
   View,
   Text,
   TouchableHighlight,
+  Image,
+  AsyncStorage,
 } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import { PropTypes } from 'prop-types';
-
+import {PropTypes} from 'prop-types';
+import {Card, Divider} from 'react-native-elements';
 
 const propTypes = {
   navigation: PropTypes.shape({
@@ -33,119 +39,168 @@ const navigationOptions = {
   },
 };
 
-export default function Home ({navigation}){
+export default function Home({navigation}) {
+  const teste = useSelector((state) => state.UserReducer.user);
+  const api = useContext(LoginApi);
 
-  const teste = useSelector(state => state.UserReducer.user);
+  const [scannedData, setScannedData] = useState(null)
 
+    //falta listener connection failed e lost
+    const onConnection = RNBluetoothClassic.addListener(
+      BTEvents.CONNECTION_SUCCESS,
+      sendData,
+      this
+    );
+
+    async function pollForData(){
+      var available = 0;
+  
+      do {
+        //console.log('Checking for available data');
+        available = await RNBluetoothClassic.available();
+        //console.log(`There are ${available} bytes of data available`);
+  
+        if (available > 0) {
+          console.log('Attempting to read the next message from the device');
+          const data = await RNBluetoothClassic.readFromDevice();
+  
+          console.log(data);
+          handleRead({data});
+        }
+      } while (available > 0);
+    };
+
+
+    function handleRead(data){
+      // data.timestamp = new Date();
+      // let scannedData = {scannedData};
+      // scannedData.unshift(data);
+      // setScannedData(scannedData);
+      if(data.data=='dados'){
+        navigation.navigate('EnviarDados');
+        console.log('aqui vou eu')
+      }
+      console.log('data: ', data)
+    };
+  
+    async function sendData(){
+      let message = 'host' + '\r'; // For commands
+      await RNBluetoothClassic.write(message);
+      console.log('enviei')
+    };
 
   //[] = corre só 1 vez
   useEffect(() => {
-    console.log('useasdsgfdsfdasr', teste.username);
+    console.log('useasdsgfdsfdasr', teste);
+    acceptConnections();
+    return function cleanup() {
+      onConnection.remove();
+    };
+  },[]);
 
-  }, []);
+  function logout() {
+    api.onLogoutPress();
+    console.log('See you later , aligator');
+  }
 
-  /*   componentDidMount() {
-    //console.log(wifi);
-    this.askForUserPermissions();
-  } */
-
-/*   handleSignOutPress = () => {
-    this.props.signOut(this.props.email);
-  }; */
-
-
-  
-  
-
-
-    //const { navigate } = this.props.navigation;
-    //let username = this.props.user.username;
-
-
-
-    /* let pontos = this.props.user.points;
-
-
-    console.log(nome, 'nome');
-    console.log(pontos, 'pontos');
- */
-    //console.log('useasdsgfdsfdasr', email);
+  async function acceptConnections() {
+    console.log("App is accepting connections now...");
+    //this.setState({ isAccepting: true });
+    try {
+      const connected = await RNBluetoothClassic.accept();
+      console.log(connected)
+      setInterval(() => {pollForData()}, 200);
+    } catch(error) {
+      console.log(error);
+    }
+  }
 
 
-    return (
+  return (
+    <ScrollView>
       <View style={styles.container}>
         <View style={styles.sectionContainer}>
-         
-          <View style={styles.intro}>
-            <Text style={styles.statusText}>Olá, {teste.username} !</Text>
+          <Card containerStyle={{borderRadius: 10, marginTop: 20}}>
+            <Card.Title style={{fontFamily: 'sans-serif-thin', fontSize: 30}}>
+              Perfil
+            </Card.Title>
+            <Card.Divider />
+            <Card.Image
+              style={styles.image}
+              resizeMode="cover"
+              style={{width: 300, height: 300}}
+              source={require('../Resources/avatar.png')}
+            />
+            <View style={styles.CardView}>
+              <Text style={styles.CardText} /*onLayout={this.verStatus}*/>
+                Olá, {teste.username} !
+              </Text>
+              <Text style={styles.CardSubText}>
+                Tens {teste.points} pontos !{' '}
+              </Text>
+            </View>
+          </Card>
 
+          <View style={styles.conjButton}>
+            <TouchableHighlight
+              style={styles.button}
+              onPress={() => navigation.navigate('EnviarDados')}>
+              <Text style={styles.buttonText}>Enviar Dados</Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              style={styles.button}
+              onPress={() => navigation.navigate('ReceberDados')}>
+              <Text style={styles.buttonText}>Receber Dados</Text>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={() => logout()} style={styles.button}>
+              <Text style={styles.buttonText}>Sair</Text>
+            </TouchableHighlight>
           </View>
-          <TouchableHighlight
-            style={styles.button}
-            onPress={() => navigation.navigate('EnviarDados')}>
-            <Text style={styles.buttonText}>Enviar Dados</Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.button}
-            onPress={() => navigation.navigate('ReceberDados')}>
-            <Text style={styles.buttonText}>Receber Dados</Text>
-          </TouchableHighlight>
-{/*           <TouchableHighlight onPress={this.handleSignOutPress} style={styles.link}>
-            <Text style={styles.buttonText}>Sair</Text>
-          </TouchableHighlight> */}
         </View>
       </View>
-    );
-  
+    </ScrollView>
+  );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: 'white',
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  CardText: {
+    marginTop: 15,
+    fontSize: 30,
+    fontFamily: 'sans-serif-light',
+    alignSelf: 'center',
+    paddingLeft: 5,
   },
-  instructionsContainer: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
+  CardSubText: {
+    marginTop: 5,
+    fontSize: 20,
+    fontFamily: 'sans-serif-light',
     fontWeight: '600',
-    color: Colors.black,
+    alignSelf: 'center',
+    paddingRight: 5,
+    color: '#3E606F',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
+  conjButton: {
+    marginTop: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
-    padding: 20,
-    borderRadius: 5,
-    backgroundColor: '#FC6663',
-    alignSelf: 'stretch',
-    margin: 15,
-    marginHorizontal: 20,
+    width: '80%',
+    backgroundColor: '#fb5b5a',
+    borderRadius: 25,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 10,
   },
   buttonText: {
-    color: '#000',
-    fontWeight: 'bold',
-    fontSize: 16,
-    textAlign: 'center',
+    color: 'white',
+    fontFamily: 'sans-serif-light',
   },
   footer: {
     color: Colors.dark,

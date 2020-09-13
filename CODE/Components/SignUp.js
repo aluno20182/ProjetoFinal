@@ -33,13 +33,13 @@ export default function SignUp({navigation}) {
     this.props.navigation.goBack();
   };
 
-  async function register(){
+  async function signup(){
     const registerForm = {name: username,
       email: email,
       password: password};
       console.log(registerForm);
       let data = JSON.stringify(registerForm);
-    await fetch(`https://strate-backend.herokuapp.com/register`, {
+    await fetch(url + '/createaccount', {
       method: "POST",
       headers: {'Content-Type':'application/json'
       },
