@@ -26,10 +26,7 @@ import wifi from 'react-native-android-wifi';
 import AndroidOpenSettings from 'react-native-android-open-settings';
 import Modal, { ModalContent } from 'react-native-modals';
 import { Card, Divider } from 'react-native-elements';
-import RNBluetoothClassic, {
-  BTEvents,
-  BTCharsets,
-} from 'react-native-bluetooth-classic';
+
 import { WifiWizard, HotspotWizard } from 'react-native-wifi-and-hotspot-wizard';
 
 
@@ -44,7 +41,6 @@ export default function ReceberDados({ navigation }) {
   //currentSSID: null,
   //currentBSSID: null, BSSID é simplesmente o endereço MAC de um ponto de acesso wireless ou também conhecido como WAP
   const [wifiList, setWifiList] = useState(null);
-  const [list, setList] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [status, setStatus] = useState(null);
   const [enable, setEnable] = useState(false);
@@ -52,66 +48,12 @@ export default function ReceberDados({ navigation }) {
   const [ip, setIp] = useState(null);
 
 
-    //falta listener connection failed e lost
-
-
-
   useEffect(() => {
     verStatus();
-    const interval = setInterval(() => {pollForData()}, 200);
-    //cleanup remove listener e interval
+
   }, [status]);
 
-  const [scannedData, setScannedData] = useState(null)
 
-  async function pollForData(){
-    var available = 0;
-
-    do {
-      //console.log('Checking for available data');
-      available = await RNBluetoothClassic.available();
-      //console.log(`There are ${available} bytes of data available`);
-
-      if (available > 0) {
-        console.log('Attempting to read the next message from the device');
-        const data = await RNBluetoothClassic.readFromDevice();
-
-        console.log(data);
-        handleRead({data});
-      }
-    } while (available > 0);
-  };
-
-
-  function handleRead(data){
-    // data.timestamp = new Date();
-    // let scannedData = {scannedData};
-    // scannedData.unshift(data);
-    // setScannedData(scannedData);
-    if(data='host'){
-      sendData('dados')
-    }
-    console.log('data: ', data)
-  };
-
-  async function sendData(message){
-     // For commands
-    await RNBluetoothClassic.write(message);
-    console.log('enviei')
-  };
-
-  // sendData = async () => {
-  //   let message = this.state.text + '\r'; // For commands
-  //   await RNBluetoothClassic.write(message);
-
-  //   let scannedData = this.state.scannedData;
-  //   scannedData.unshift({
-  //     timestamp: new Date(),
-  //     data: this.state.text,
-  //     type: 'sent',
-  //   });
-  //   this.setState({text: '', scannedData});
-  // };
 
 
   //Apresenta o status da conexão
@@ -348,7 +290,7 @@ export default function ReceberDados({ navigation }) {
           <TouchableHighlight style={styles.button} onPress={verIP}>
             <Text style={styles.ButtonText}>Ver IP</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.button} onPress={() => {navigation.navigate('Bluetooth')}}>
+          <TouchableHighlight style={styles.button} onPress={() => navigation.navigate('Bluetooth')}>
             <Text style={styles.ButtonText}>Ver Devices</Text>
           </TouchableHighlight>
         </View>
@@ -373,7 +315,7 @@ export default function ReceberDados({ navigation }) {
                 onPress={() => {
                   setModalVisible(false);
                 }}>
-                <Text style={styles.exit}>Exit</Text>
+                <Text>Exit</Text>
               </TouchableOpacity>
               <Text style={styles.textHighlightS}>SSID</Text>
               <TextInput
@@ -392,15 +334,11 @@ export default function ReceberDados({ navigation }) {
                 value={pass}
                 placeholder={'password'}
               />
-              <View style={styles.conjButton}>
-                <TouchableHighlight
-                  style={styles.button}
+              <View>
+                <Button
+                  title="Conectar"
                   onPress={connectOnPress}
-                >
-                <Text>
-                Conectar
-                </Text>
-                </TouchableHighlight>
+                />
                 <Text style={styles.answer}>
                   {ssidExist == null
                     ? ''
@@ -429,11 +367,9 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
   },
-  exit: {
-    fontFamily: 'sans-serif-light',
-    color:'white'
+  HomeView: {
+
   },
-  
   CardView: {
     marginTop: 15,
     marginBottom: 25,
@@ -526,10 +462,9 @@ const styles = StyleSheet.create({
   },
   textHighlightS: {
     color: '#FFF',
-    fontFamily: 'sans-serif',
+    fontWeight: 'bold',
     fontSize: 20,
     textAlign: 'center',
-    marginBottom: 10,  
   },
   bottomMessageHighlight: {
     color: '#f4a63b',

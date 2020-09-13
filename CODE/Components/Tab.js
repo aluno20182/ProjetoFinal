@@ -15,41 +15,23 @@ export default class Tab extends React.Component {
   render() {
     return (
       <Stack.Navigator initialRouteName="Home" screenOptions={{
-        title: 'Home',
-          headerStyle: {
-            backgroundColor: '#3E606F',
-          },
-          headerShown: true, 
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontFamily: 'sans-serif-thin',
-          },
-         
+        headerShown: false 
       }}>
         <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="EnviarDados" component={EnviarDados} options={{
-          title: 'Enviar Dados',
-          headerStyle: {
-            backgroundColor: '#3E606F',
-          },
-          headerShown: true, 
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontFamily: 'sans-serif-thin',
-          },
-        }} />
+        <Stack.Screen name="EnviarDados" component={EnviarDados} />
         <Stack.Screen name="ReceberDados" component={ReceberDados} options={{
           title: 'Receber Dados',
           headerStyle: {
             backgroundColor: '#3E606F',
           },
-          headerShown: true, 
+          header: true,
           headerTintColor: '#fff',
           headerTitleStyle: {
-            fontFamily: 'sans-serif-thin',
+            fontWeight: 'bold',
           },
         }} />
         <Stack.Screen name="Bluetooth" component={Bluetooth} />
+
         <Stack.Screen name="Peers" component={Peers} />
       </Stack.Navigator>
     );
