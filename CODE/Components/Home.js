@@ -20,6 +20,8 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import {PropTypes} from 'prop-types';
 import {Card, Divider} from 'react-native-elements';
+import PushNotification from 'react-native-push-notification';
+
 
 const propTypes = {
   navigation: PropTypes.shape({
@@ -42,6 +44,7 @@ const navigationOptions = {
 export default function Home({navigation}) {
   const teste = useSelector((state) => state.UserReducer.user);
   const api = useContext(LoginApi);
+
 
   const [scannedData, setScannedData] = useState(null)
 
@@ -78,6 +81,11 @@ export default function Home({navigation}) {
       // setScannedData(scannedData);
       console.log(data)
       if(data.data=='dados'){
+        //--> Criar notificação
+        PushNotification.localNotification({
+          //... You can use all the options from localNotifications
+          message: "Foi feito um pedido para ligação.", // (required)
+        });
         navigation.navigate('EnviarDados');
         console.log('aqui vou eu')
       }

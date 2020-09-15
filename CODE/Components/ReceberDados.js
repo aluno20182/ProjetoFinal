@@ -52,19 +52,19 @@ export default function ReceberDados({ navigation }) {
   const [ip, setIp] = useState(null);
 
 
-    //falta listener connection failed e lost
+  //falta listener connection failed e lost
 
 
 
   useEffect(() => {
     verStatus();
-    const interval = setInterval(() => {pollForData()}, 200);
+    const interval = setInterval(() => { pollForData() }, 200);
     //cleanup remove listener e interval
   }, [status]);
 
   const [scannedData, setScannedData] = useState(null)
 
-  async function pollForData(){
+  async function pollForData() {
     var available = 0;
 
     do {
@@ -77,36 +77,45 @@ export default function ReceberDados({ navigation }) {
         const data = await RNBluetoothClassic.readFromDevice();
 
         console.log(data);
-        handleRead({data});
+        handleRead({ data });
       }
     } while (available > 0);
   };
 
 
-  function handleRead(data){
+  function handleRead(data) {
     // data.timestamp = new Date();
     // let scannedData = {scannedData};
     // scannedData.unshift(data);
     // setScannedData(scannedData);
-    console.log('special: ', data);
-    switch (data.data) {
-      case 'host':
-        sendData('dados')
-        break;
-      case true:
-        console.log('entri')
-        setSsid(JSON.parse(data.ssid));
-        setPass(JSON.parse(data.password));
-        break;s
-      default:
-        break;
+
+
+    if (data.data == 'host') {
+      sendData('dados')
+    } else {
+      try {
+        console.log('ridiculo')
+        let datajson = JSON.parse(data.data)
+        console.log('datajson: ', datajson);
+
+
+        if (datajson.ssid != null && datajson.password != null) {
+          console.log('entri')
+          getWifiNetworksOnPress()
+          SetSsid(datajson.ssid);
+          setPass(datajson.password);
+        }
+      } catch (error) {
+        
+        console.log(error);
+      }
     }
-   
+
     console.log('data: ', data)
   };
 
-  async function sendData(message){
-     // For commands
+  async function sendData(message) {
+    // For commands
     await RNBluetoothClassic.write(message);
     console.log('enviei')
   };
@@ -165,42 +174,13 @@ export default function ReceberDados({ navigation }) {
   async function connectOnPress() {
     console.log(pass);
 
-    /*     wifi.findAndConnect(ssid, pass, (found) => {
-          console.log(ssid, 'ssid');
-          console.log(pass, 'pass');
-          console.log(found, 'found');
-    
-          if (found) {
-            console.log("wifi is in range");
-            setSsid(ssid);
-    
-          } else {
-            console.log("wifi is not in range");
-          }
-        });  */
-
-
-
-    /* 
-        try {
-          const data = await WifiManager.connectToProtectedSSID(
-            ssid,
-            pass,
-            false,
-          );
-          console.log('Connected successfully!', {data});
-          SetSsid(ssid);
-        } catch (error) {
-          console.log('Connection failed!', {error});
-        }  */
-
     let network = wifiList.filter((Network) => {
       console.log('ssssssssssss', ssid)
       return Network.SSID == "NOS-8E40";
     })
     console.log(network[0])
 
-    WifiWizard.connectToNetwork(network[0], "NOS-8E40", "7ea33eeec632")
+    WifiWizard.connectToNetwork(network[0], ssid, pass)
       .then((data) => {
         console.log('sextou', data)
         if (data.status == "connected") {
@@ -359,7 +339,7 @@ export default function ReceberDados({ navigation }) {
           <TouchableHighlight style={styles.button} onPress={verIP}>
             <Text style={styles.ButtonText}>Ver IP</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.button} onPress={() => {navigation.navigate('Bluetooth')}}>
+          <TouchableHighlight style={styles.button} onPress={() => { navigation.navigate('Bluetooth') }}>
             <Text style={styles.ButtonText}>Ver Devices</Text>
           </TouchableHighlight>
         </View>
@@ -408,8 +388,8 @@ export default function ReceberDados({ navigation }) {
                   style={styles.button}
                   onPress={connectOnPress}
                 >
-                <Text>
-                Conectar
+                  <Text>
+                    Conectar
                 </Text>
                 </TouchableHighlight>
                 <Text style={styles.answer}>
@@ -442,9 +422,9 @@ const styles = StyleSheet.create({
   },
   exit: {
     fontFamily: 'sans-serif-light',
-    color:'white'
+    color: 'white'
   },
-  
+
   CardView: {
     marginTop: 15,
     marginBottom: 25,
@@ -540,7 +520,7 @@ const styles = StyleSheet.create({
     fontFamily: 'sans-serif',
     fontSize: 20,
     textAlign: 'center',
-    marginBottom: 10,  
+    marginBottom: 10,
   },
   bottomMessageHighlight: {
     color: '#f4a63b',

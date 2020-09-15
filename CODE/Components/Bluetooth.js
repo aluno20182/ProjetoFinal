@@ -110,6 +110,7 @@ export default function Bluetooth({navigation}) {
       await RNBluetoothClassic.connect(device.id);
       //this.setState({connectedDevice});
       console.log('connected')
+      navigation.navigate('ReceberDados');
     } catch (error) {
       console.log(error.message);
     }
