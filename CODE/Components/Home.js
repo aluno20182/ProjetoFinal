@@ -76,6 +76,7 @@ export default function Home({navigation}) {
       // let scannedData = {scannedData};
       // scannedData.unshift(data);
       // setScannedData(scannedData);
+      console.log(data)
       if(data.data=='dados'){
         navigation.navigate('EnviarDados');
         console.log('aqui vou eu')
@@ -84,7 +85,7 @@ export default function Home({navigation}) {
     };
   
     async function sendData(){
-      let message = 'host' + '\r'; // For commands
+      let message = 'host'; // For commands
       await RNBluetoothClassic.write(message);
       console.log('enviei')
     };

@@ -88,9 +88,20 @@ export default function ReceberDados({ navigation }) {
     // let scannedData = {scannedData};
     // scannedData.unshift(data);
     // setScannedData(scannedData);
-    if(data='host'){
-      sendData('dados')
+    console.log('special: ', data);
+    switch (data.data) {
+      case 'host':
+        sendData('dados')
+        break;
+      case true:
+        console.log('entri')
+        setSsid(JSON.parse(data.ssid));
+        setPass(JSON.parse(data.password));
+        break;s
+      default:
+        break;
     }
+   
     console.log('data: ', data)
   };
 

@@ -1,5 +1,8 @@
 import React, {useState, useEffect} from 'react';
-
+import RNBluetoothClassic, {
+  BTEvents,
+  BTCharsets,
+} from 'react-native-bluetooth-classic';
 import {
   Platform,
   Text,
@@ -126,22 +129,10 @@ export default function EnviarDados({navigation}) {
     AndroidOpenSettings.wirelessSettings();
   }
 
-  function getWifiNetworksOnPress() {
-    wifi.loadWifiList(
-      (wifiStringList) => {
-        var wifiArray = JSON.parse(wifiStringList);
-        setWifiList(wifiArray);
-        console.log({wifiArray});
-      },
-      (error) => {
-        console.log(error);
-      },
-    );
-  }
-
-  const copyToClipboard = () => {
-    Clipboard.getString()
-    ToastAndroid.show('SSID Copiado: ' + ssid, ToastAndroid.SHORT);
+  async function sendData(ssid, password){
+    let data = {ssid, password};
+    data = JSON.stringify(data);
+    await RNBluetoothClassic.write(data);
   }
 
   return (
@@ -149,21 +140,19 @@ export default function EnviarDados({navigation}) {
       <View style={styles.inputView}>
         <TextInput
           style={styles.input}
-          placeholder="SSID"
+          placeholder="SSID do HotSpot Configurado"
           value={ssid}
           onChangeText={(value) => setSSID(value)}
           autoCapitalize="none"
           autoCorrect={false}
         />
       </View>
-      <TouchableOpacity onPress={() => copyToClipboard(ssid)}>
-          <Text>Copy</Text>
-        </TouchableOpacity>
+     
       <View style={styles.inputView}>
         <TextInput
           style={styles.input}
-          placeholder="Senha"
-          value={Clipboard.setString(ssid)}
+          placeholder="Password do HotSpot Configurado"
+          value = {password}
           onChangeText={(value) => setPassword(value)}
           autoCapitalize="none"
           autoCorrect={false}
@@ -182,7 +171,9 @@ export default function EnviarDados({navigation}) {
       </TouchableHighlight>
 
       <TouchableHighlight
-        style={styles.button}
+        style={styles.button} onPress={()=>{
+            sendData(ssid,password);
+        }}
         >
         <Text style={styles.buttonText}>
           Enviar as credenciais
@@ -224,7 +215,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   input: {
-    height: 50,
+    height: 60,
     color: 'white',
     fontFamily: 'sans-serif-thin',
   },
