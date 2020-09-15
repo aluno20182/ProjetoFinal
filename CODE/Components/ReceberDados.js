@@ -331,16 +331,16 @@ export default function ReceberDados({ navigation }) {
             onPress={getWifiNetworksOnPress}>
             <Text style={styles.ButtonText}>Redes WIFI Disponiveis</Text>
           </TouchableHighlight>
-
+{/* 
           <TouchableHighlight style={styles.button} onPress={verSSID}>
             <Text style={styles.ButtonText}>Ver SSID</Text>
           </TouchableHighlight>
 
           <TouchableHighlight style={styles.button} onPress={verIP}>
             <Text style={styles.ButtonText}>Ver IP</Text>
-          </TouchableHighlight>
+          </TouchableHighlight> */}
           <TouchableHighlight style={styles.button} onPress={() => { navigation.navigate('Bluetooth') }}>
-            <Text style={styles.ButtonText}>Ver Devices</Text>
+            <Text style={styles.ButtonText}>Selecionar Dispositivo a Conectar</Text>
           </TouchableHighlight>
         </View>
         <Modal

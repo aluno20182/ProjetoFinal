@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from './Home';
 import EnviarDados from './EnviarDados';
 import ReceberDados from './ReceberDados';
-import Peers from './Peers';
 import Bluetooth from './Bluetooth'
 
 
@@ -50,7 +49,6 @@ export default class Tab extends React.Component {
           },
         }} />
         <Stack.Screen name="Bluetooth" component={Bluetooth} />
-        <Stack.Screen name="Peers" component={Peers} />
       </Stack.Navigator>
     );
   }
