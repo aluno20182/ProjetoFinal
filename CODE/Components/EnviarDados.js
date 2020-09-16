@@ -41,6 +41,7 @@ export default function EnviarDados({ navigation }) {
   const [wifiList, setWifiList] = useState(null);
   const [ssid, setSSID] = useState();
   const [password, setPassword] = useState();
+  
 
   //HotsPot enable function
   /* function doEnable() {

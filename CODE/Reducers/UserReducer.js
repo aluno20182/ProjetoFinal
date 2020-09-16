@@ -1,11 +1,7 @@
 import { SET_USER } from '../Actions/index';
 
 const initialState = {
-  user: {
-      username: 'ricardo',
-      email: 'r@rr.com',
-      points: '100',
-  }
+  user: null
 };
 
 export const UserReducer = (state = initialState, action) => {
@@ -13,7 +9,7 @@ export const UserReducer = (state = initialState, action) => {
     case SET_USER:
       return {
         ...state,
-        user: action.user
+        user: action.payload,
       };
     default:
       return state;

@@ -1,4 +1,4 @@
-import { UserReducer } from './UserReducer';
+import UserReducer  from './UserReducer';
 import { CredReducer } from './CredReducer';
 import { combineReducers } from 'redux';
 

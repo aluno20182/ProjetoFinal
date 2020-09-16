@@ -1,9 +1,12 @@
-import React, {Component, useState, useContext} from 'react';
-import {AsyncStorage} from 'react-native';
+import React, { Component, useState, useContext } from 'react';
+import { AsyncStorage } from 'react-native';
 
 AsyncStorage;
-import {LoginApi} from '../../index.js';
+import { LoginApi } from '../../index.js';
 //import { loginUpdate, loginUser } from '../Actions/LoginActions';
+import {
+  SET_USER
+} from '../Actions/index';
 
 import url from '../../Url';
 
@@ -14,9 +17,9 @@ import {
   TextInput,
   TouchableHighlight,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-export default function Login({navigation}) {
+export default function Login({ navigation }) {
   const [email, setEmail] = useState('b@bb.com');
   const [password, setPassword] = useState('teste123');
 
@@ -24,7 +27,7 @@ export default function Login({navigation}) {
   const dispatch = useDispatch();
 
   function setUser(user) {
-    dispatch({type: 'SET_USER', user: user});
+    dispatch({ type: 'SET_USER', user: user });
   }
 
   const navigationOptions = {
@@ -40,25 +43,37 @@ export default function Login({navigation}) {
   }
 
   async function login() {
-    let login = {email: email, password: password};
+    let login = { email: email, password: password };
+    let data = JSON.stringify(login);
+    console.log('data', data)
+
     await fetch(url + '/loginaccount', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(login),
+      headers: { 'Content-Type': 'application/json' },
+      body: data,
+
     })
-      .then((response) => {
-        console.log(response.body);
+      .then((res) => res.json())
+      .then((res) => {
+        console.log('response', res);
         //guardar username e token no AsyncStorage
-        AsyncStorage.setItem('token', response.token);
+        AsyncStorage.setItem('token', res.token);
         //passar para a app
-        if (response.status == 200) {
-          api.onLoginPress();
-        }
+/*         dispatch({
+          type: SET_USER,
+          payload: res,
+        });   */      
+        api.onLoginPress();
+
+
       })
       .catch((error) => {
         console.error(error);
       });
   }
+/*   function setDevice(device){
+    dispatch({type:'SELECT_DEVICE', device: device})
+  } */
 
   function loginSemAuth() {
     api.onLoginPress();
@@ -93,7 +108,7 @@ export default function Login({navigation}) {
       </View>
       <View style={styles.separator} />
 
-      <TouchableHighlight style={styles.button} onPress={loginSemAuth}>
+      <TouchableHighlight style={styles.button} onPress={login}>
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableHighlight>
       <TouchableHighlight onPress={changeRegister}>

@@ -22,6 +22,7 @@ import {PropTypes} from 'prop-types';
 import {Card, Divider} from 'react-native-elements';
 import PushNotification from 'react-native-push-notification';
 
+import url from '../../Url';
 
 const propTypes = {
   navigation: PropTypes.shape({
@@ -101,11 +102,34 @@ export default function Home({navigation}) {
   //[] = corre só 1 vez
   useEffect(() => {
     console.log('useasdsgfdsfdasr', teste);
+    getPoints()
     acceptConnections();
     return function cleanup() {
       onConnection.remove();
     };
   },[]);
+  async function getPoints() {
+    console.log('fdghfdg', teste.points);
+
+    let data = {token: teste.points};
+    await fetch(url + '/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        console.log(response.body);
+        //guardar username e token no AsyncStorage
+        AsyncStorage.setItem('token', response.token);
+        //passar para a app
+        if (response.status == 200) {
+          api.onLoginPress();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   function logout() {
     api.onLogoutPress();
@@ -123,7 +147,7 @@ export default function Home({navigation}) {
       console.log(error);
     }
   }
-
+  console.log('sdvsdvsdv', teste)
 
   return (
     <ScrollView>

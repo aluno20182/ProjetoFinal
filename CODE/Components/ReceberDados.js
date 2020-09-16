@@ -101,9 +101,10 @@ export default function ReceberDados({ navigation }) {
 
         if (datajson.ssid != null && datajson.password != null) {
           console.log('entri')
-          getWifiNetworksOnPress()
           SetSsid(datajson.ssid);
           setPass(datajson.password);
+          getWifiNetworksOnPress()
+
         }
       } catch (error) {
         
@@ -111,7 +112,7 @@ export default function ReceberDados({ navigation }) {
       }
     }
 
-    console.log('data: ', data)
+    console.log('data: ', data.data)
   };
 
   async function sendData(message) {
@@ -140,7 +141,6 @@ export default function ReceberDados({ navigation }) {
       //console.log(res)
       if (res) {
         setEnable('Ligado');
-        verSSID();
         //console.log({enable});
       }
       else {
@@ -331,11 +331,11 @@ export default function ReceberDados({ navigation }) {
             onPress={getWifiNetworksOnPress}>
             <Text style={styles.ButtonText}>Redes WIFI Disponiveis</Text>
           </TouchableHighlight>
-{/* 
+ 
           <TouchableHighlight style={styles.button} onPress={verSSID}>
             <Text style={styles.ButtonText}>Ver SSID</Text>
           </TouchableHighlight>
-
+{/*
           <TouchableHighlight style={styles.button} onPress={verIP}>
             <Text style={styles.ButtonText}>Ver IP</Text>
           </TouchableHighlight> */}
