@@ -181,7 +181,6 @@ export default function Bluetooth({navigation}) {
  * Huawei but the fact that the notch is different than the status bar makes the statusbar
  * go below the notch (even when the notch is on).
  */
-const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 
 const styles = StyleSheet.create({
   container: {

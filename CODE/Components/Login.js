@@ -1,15 +1,8 @@
 import React, { Component, useState, useContext } from 'react';
 import { AsyncStorage } from 'react-native';
-
-AsyncStorage;
 import { LoginApi } from '../../index.js';
-//import { loginUpdate, loginUser } from '../Actions/LoginActions';
-import {
-  SET_USER
-} from '../Actions/index';
-
+import { SET_USER } from '../Actions/types';
 import url from '../../Url';
-
 import {
   StyleSheet,
   View,
@@ -20,33 +13,33 @@ import {
 import { useDispatch } from 'react-redux';
 
 export default function Login({ navigation }) {
-  const [email, setEmail] = useState('b@bb.com');
-  const [password, setPassword] = useState('teste123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const api = useContext(LoginApi);
   const dispatch = useDispatch();
-
-  function setUser(user) {
-    dispatch({ type: 'SET_USER', user: user });
-  }
 
   const navigationOptions = {
     header: null,
   };
 
+  //Passa para o ecra de Registo
   function changeRegister() {
     navigation.navigate('SignUp');
   }
 
+  //Passa para o ecra de Receber Dados
   function handleNotLoggedIn() {
     navigation.navigate('ReceberDados');
   }
 
   async function login() {
+    //Values que vem do textinput
     let login = { email: email, password: password };
     let data = JSON.stringify(login);
     console.log('data', data)
 
+    //Comunicação com o back end
     await fetch(url + '/loginaccount', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -59,22 +52,20 @@ export default function Login({ navigation }) {
         //guardar username e token no AsyncStorage
         AsyncStorage.setItem('token', res.token);
         //passar para a app
-/*         dispatch({
+        dispatch({
           type: SET_USER,
           payload: res,
-        });   */      
+        });
+        //executa o login e passa para o ecra Home
         api.onLoginPress();
-
-
       })
       .catch((error) => {
         console.error(error);
       });
   }
-/*   function setDevice(device){
-    dispatch({type:'SELECT_DEVICE', device: device})
-  } */
 
+
+  //Login feito sem autenticação, razões de teste
   function loginSemAuth() {
     api.onLoginPress();
   }
@@ -102,9 +93,6 @@ export default function Login({ navigation }) {
           autoCorrect={false}
           secureTextEntry
         />
-        {/*           {this.state.error.length !== 0 && (
-          <Text style={styles.errorMessage}>{this.state.error}</Text>
-        )} */}
       </View>
       <View style={styles.separator} />
 
@@ -148,13 +136,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  errorMessage: {
-    textAlign: 'center',
-    color: '#ce2029',
-    fontSize: 16,
-    marginBottom: 15,
-    marginHorizontal: 20,
-  },
   button: {
     width: '80%',
     backgroundColor: '#fb5b5a',
@@ -169,12 +150,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'sans-serif-light',
   },
-
   signUpLink: {
     padding: 10,
     marginTop: 20,
   },
-
   signUpLinkText: {
     color: '#999',
     fontFamily: 'sans-serif',

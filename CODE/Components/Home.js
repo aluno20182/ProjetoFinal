@@ -1,6 +1,5 @@
 import React, {useEffect, useContext, useState} from 'react';
 import {useSelector} from 'react-redux';
-//import { signOut, getPoints } from '../Actions/HomeActions';
 import {LoginApi} from '../../index.js';
 import RNBluetoothClassic, {
   BTEvents,
@@ -9,17 +8,13 @@ import RNBluetoothClassic, {
 import {
   StyleSheet,
   ScrollView,
-  Button,
   View,
   Text,
   TouchableHighlight,
-  Image,
-  AsyncStorage,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-
 import {PropTypes} from 'prop-types';
-import {Card, Divider} from 'react-native-elements';
+import {Card} from 'react-native-elements';
 import PushNotification from 'react-native-push-notification';
 
 import url from '../../Url';
@@ -46,10 +41,7 @@ export default function Home({navigation}) {
   const teste = useSelector((state) => state.UserReducer.user);
   const api = useContext(LoginApi);
 
-
-  const [scannedData, setScannedData] = useState(null)
-
-    //falta listener connection failed e lost
+    //
     const onConnection = RNBluetoothClassic.addListener(
       BTEvents.CONNECTION_SUCCESS,
       sendData,
@@ -58,7 +50,6 @@ export default function Home({navigation}) {
 
     async function pollForData(){
       var available = 0;
-  
       do {
         //console.log('Checking for available data');
         available = await RNBluetoothClassic.available();
@@ -76,69 +67,46 @@ export default function Home({navigation}) {
 
 
     function handleRead(data){
-      // data.timestamp = new Date();
-      // let scannedData = {scannedData};
-      // scannedData.unshift(data);
-      // setScannedData(scannedData);
       console.log(data)
       if(data.data=='dados'){
-        //--> Criar notificação
+        //Notificação
         PushNotification.localNotification({
-          //... You can use all the options from localNotifications
           message: "Foi feito um pedido para ligação.", // (required)
         });
+        //Passar para o ecra Enviar Dados
         navigation.navigate('EnviarDados');
         console.log('aqui vou eu')
       }
       console.log('data: ', data)
     };
   
+
     async function sendData(){
       let message = 'host'; // For commands
       await RNBluetoothClassic.write(message);
       console.log('enviei')
     };
 
+
   //[] = corre só 1 vez
   useEffect(() => {
     console.log('useasdsgfdsfdasr', teste);
-    getPoints()
     acceptConnections();
     return function cleanup() {
       onConnection.remove();
     };
   },[]);
-  async function getPoints() {
-    console.log('fdghfdg', teste.points);
 
-    let data = {token: teste.points};
-    await fetch(url + '/', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data),
-    })
-      .then((response) => {
-        console.log(response.body);
-        //guardar username e token no AsyncStorage
-        AsyncStorage.setItem('token', response.token);
-        //passar para a app
-        if (response.status == 200) {
-          api.onLoginPress();
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
 
+  //permite ao utilizador terminar sessão
   function logout() {
     api.onLogoutPress();
     console.log('See you later , aligator');
   }
 
+
   async function acceptConnections() {
     console.log("App is accepting connections now...");
-    //this.setState({ isAccepting: true });
     try {
       const connected = await RNBluetoothClassic.accept();
       console.log(connected)
@@ -147,7 +115,6 @@ export default function Home({navigation}) {
       console.log(error);
     }
   }
-  console.log('sdvsdvsdv', teste)
 
   return (
     <ScrollView>
@@ -166,10 +133,10 @@ export default function Home({navigation}) {
             />
             <View style={styles.CardView}>
               <Text style={styles.CardText} /*onLayout={this.verStatus}*/>
-                Olá, {teste.username} !
+                Olá, {teste.username}
               </Text>
               <Text style={styles.CardSubText}>
-                Tens {teste.points} pontos !{' '}
+                Tens {teste.points} pontos.{' '}
               </Text>
             </View>
           </Card>

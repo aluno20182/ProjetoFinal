@@ -3,28 +3,20 @@ import RNBluetoothClassic, {
   BTEvents,
   BTCharsets,
 } from 'react-native-bluetooth-classic';
+import {useSelector} from 'react-redux';
 import {
-  Platform,
   Text,
   View,
-  Button,
-  ToastAndroid,
-  ListView,
   StyleSheet,
-  ScrollView,
   TextInput,
   TouchableHighlight,
-  TouchableOpacity,
-  Clipboard
 } from 'react-native';
-//Third party
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { HotspotWizard } from 'react-native-wifi-and-hotspot-wizard';
 import { Card, Divider } from 'react-native-elements';
-
+import url from '../../Url';
 import AndroidOpenSettings from 'react-native-android-open-settings';
+import { useDispatch } from 'react-redux';
+import { SET_USER } from '../Actions/types';
 
-import wifi from 'react-native-android-wifi';
 
 export default function EnviarDados({ navigation }) {
   const navigationOptions = {
@@ -41,100 +33,50 @@ export default function EnviarDados({ navigation }) {
   const [wifiList, setWifiList] = useState(null);
   const [ssid, setSSID] = useState();
   const [password, setPassword] = useState();
+  const teste = useSelector((state) => state.UserReducer.user);
+  const dispatch = useDispatch();
+
   
 
-  //HotsPot enable function
-  /* function doEnable() {
-    // console.warn("do Enable called");
-    HotspotWizard.turnOnHotspot('', '')
-      .then((data) => {
-        console.log(data);
-        let status = data.status;
-        if (status == 'success') {
-          // Hotspot Enabled Successfully with custom credentials.
-          console.log('Criado com SSID: John Doe Network & Pass: helloworld');
-        } else if (status == 'auth') {
-          // Hotspot Enabled Successfully with random credentials.
-          console.log('o tal ssid', data.SSID);
-          console.log(data.status);
-        }
-      })
-      .catch((err) => console.log(err)); */
-  /* Hotspot.enable(
-      () => {
-        ToastAndroid.show('Hotspot Enabled', ToastAndroid.SHORT);
-      },
-      err => {
-        ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
-      },
-    );
-  }*/
-  //Disable HotsPot
-  /*   function doDisable() {
-    HotspotWizard.turnOffHotspot().then((data) => {
-      let status = data.status;
-      if (status == 'success') {
-        // Hotspot Disabled Successfully
-        console.log('Disabled');
-      } else {
-        // Failed to disabled Hotspot.
-        console.log('error');
-      }
-    });
-    /* Hotspot.disable(
-      () => {
-        ToastAndroid.show('Hotspot Disabled', ToastAndroid.SHORT);
-      },
-      err => {
-        ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
-      },
-    ); 
-  } */
-
-  // //go to create screen
-  // goToCreate = () => {
-  //   /* this.props.navigation.navigate('CreateHotspot'); */
-  //   var hotspot = { SSID: 'HelloWorld', password: 'helloworld' };
-  //   Hotspot.create(
-  //     hotspot,
-  //     () => {
-  //       ToastAndroid.show('Hotspot Created', ToastAndroid.SHORT);
-  //     },
-  //     err => {
-  //       ToastAndroid.show('Deu merda!', ToastAndroid.SHORT);
-  //     },
-  //   );
-  // };
-
-  // //fetch your hotspot settings.
-  // // This funciton will give config details, after enable hotspot
-  // doFetch = () => {
-  //   Hotspot.getConfig(
-  //     config => {
-  //       ToastAndroid.show(config.ssid, ToastAndroid.SHORT);
-  //     },
-  //     err => {
-  //       console.log(config.ssid);
-
-  //       ToastAndroid.show(err.toString(), ToastAndroid.SHORT);
-  //     },
-  //   );
-  // };
-
-  //go to the peers screen
-  /*   goToPeers = () => {
-    this.props.navigation.navigate('Peers');
-  }; */
-
   function goToSet() {
-    // Open date settings menu
+    // Open wireless settings menu
     AndroidOpenSettings.wirelessSettings();
+  }
+
+  //
+  async function hotspotPoints() {
+    let email = teste.email
+    let login = { email: email};
+    let data = JSON.stringify(login);
+    console.log('data', data)
+
+    await fetch(url + '/pontoshotspot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: data,
+
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log('response', res);
+        //passar para a app
+        dispatch({
+          type: SET_USER,
+          payload: res,
+        });
+        return res
+      })
+      .catch((error) => {
+        console.error(error);
+      }); 
   }
 
   async function sendData(ssid, password) {
     let data = { ssid, password };
     data = JSON.stringify(data);
     await RNBluetoothClassic.write(data);
+    console.log(data)
+    hotspotPoints()
   }
 
   return (
