@@ -3,13 +3,13 @@
  */
 import 'react-native-gesture-handler';
 
-import React, {Component, useEffect} from 'react';
-import {AppRegistry, AsyncStorage} from 'react-native';
+import React, { Component, useEffect } from 'react';
+import { AppRegistry, AsyncStorage } from 'react-native';
 import App from './App';
-import {name as appName} from './app.json';
-import {Provider} from 'react-redux';
-import {Store} from './CODE/store/index';
-import {useState, createContext, useContext} from 'react';
+import { name as appName } from './app.json';
+import { Provider } from 'react-redux';
+import { Store } from './CODE/store/index';
+import { useState, createContext, useContext } from 'react';
 import Login from './CODE/Components/Login';
 import SignUp from './CODE/Components/SignUp';
 import ReceberDados from './CODE/Components/ReceberDados';
@@ -18,9 +18,9 @@ import RNBluetoothClassic, {
   BTEvents,
   BTCharsets,
 } from 'react-native-bluetooth-classic';
-import {PermissionsAndroid} from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import {
   NavigationContext,
   NavigationContainer,
@@ -41,7 +41,19 @@ function Auth() {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="SignUp" component={SignUp} />
+      <Stack.Screen name="SignUp" component={SignUp}
+        options={{
+          title: 'SignUp',
+          headerStyle: {
+            backgroundColor: '#3E606F',
+            borderBottomColor: 'transparent',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontFamily: 'sans-serif-thin',
+          },
+          headerTitleAlign: 'center',
+        }} />
       <Stack.Screen
         name="ReceberDados"
         component={ReceberDados}
@@ -128,47 +140,47 @@ function ProjetoFinal() {
   };
 
 
-    
-  
-  
+
+
+
   function notification() {
-     
-      const data = 'host';
-      BleManager.startNotification(
-        'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
-        'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
-        'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
-      )
-        .then(() => {
-          // Success code
-          console.log('Notification started');
-          BleManager.write(
-            'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
-            'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
-            'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
-            data,
-          )
-            .then(() => {
-              // Success code
-              console.log('Write: ' + data);
-            })
-            .catch((error) => {
-              // Failure code
-              console.log(error);
-            });
-        })
-        .catch((error) => {
-          // Failure code
-          console.log(error);
-        });
-    }
+
+    const data = 'host';
+    BleManager.startNotification(
+      'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+      'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+      'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+    )
+      .then(() => {
+        // Success code
+        console.log('Notification started');
+        BleManager.write(
+          'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+          'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+          'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+          data,
+        )
+          .then(() => {
+            // Success code
+            console.log('Write: ' + data);
+          })
+          .catch((error) => {
+            // Failure code
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        // Failure code
+        console.log(error);
+      });
+  }
 
   const onLogoutPress = async () => {
     await AsyncStorage.removeItem('token');
     setIsLoggedIn(false);
   };
 
-  const api = {onLoginPress, onLogoutPress};
+  const api = { onLoginPress, onLogoutPress };
 
   function ifExists() {
     let token = AsyncStorage.getItem(token);
