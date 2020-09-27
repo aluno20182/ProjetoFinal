@@ -1,4 +1,6 @@
 import React, {Component, useState} from 'react';
+import url from '../../Url';
+
 
 //import SignUpUser from './../Actions/SignUpActions'
 
@@ -68,7 +70,7 @@ export default function SignUp({navigation}) {
           actions: [NavigationActions.navigate({routeName: 'SignIn'})],
         });
         this.props.navigation.dispatch(resetAction); */
-    navigation.navigate('SignIn');
+    navigation.navigate('Login');
   };
 
     return (
@@ -136,7 +138,7 @@ export default function SignUp({navigation}) {
 
          <TouchableHighlight
           style={styles.loginBtn}
-          onPress={() => signUp()}
+          onPress={() => signup()}
           underlayColor="#99d9f4">
           <Text style={styles.loginText}>Criar Conta</Text>
         </TouchableHighlight>

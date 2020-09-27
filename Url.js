@@ -1,3 +1,3 @@
-let Url = 'http://192.168.1.9:3000';
+let Url = 'https://manzhotbe.herokuapp.com';
 
 export default Url;
