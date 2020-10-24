@@ -145,7 +145,7 @@ export default function Home({navigation}) {
             <TouchableHighlight
               style={styles.button}
               onPress={() => navigation.navigate('EnviarDados')}>
-              <Text style={styles.buttonText}>Enviar Dados</Text>
+              <Text style={styles.buttonText}>Partilhar Dados</Text>
             </TouchableHighlight>
             <TouchableHighlight
               style={styles.button}

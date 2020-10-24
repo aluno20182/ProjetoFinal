@@ -27,7 +27,7 @@ export default class Tab extends React.Component {
       }}>
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="EnviarDados" component={EnviarDados} options={{
-          title: 'Enviar Dados',
+          title: 'Partilhar Dados',
           headerStyle: {
             backgroundColor: '#3E606F',
           },

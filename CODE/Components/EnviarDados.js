@@ -20,7 +20,7 @@ import { SET_USER } from '../Actions/types';
 
 export default function EnviarDados({ navigation }) {
   const navigationOptions = {
-    title: 'Enviar Dados',
+    title: 'Partilhar Dados',
     headerStyle: {
       backgroundColor: '#08a092',
     },
